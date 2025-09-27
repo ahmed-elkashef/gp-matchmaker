@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GP MatchMaker - Smart Ranking Tool</title>
+    <title>GP MatchMaker 2025 - Strategic MSRA-Based Ranking</title>
     <style>
         * {
             margin: 0;
@@ -62,6 +62,110 @@
             transform: translateY(-2px);
         }
 
+        /* MSRA Input Section Styles */
+        .msra-input-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .msra-input-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .score-input-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        #msraTotal {
+            font-size: 24px;
+            padding: 15px;
+            width: 200px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .or-divider {
+            color: #999;
+            font-weight: 500;
+        }
+
+        .component-scores {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .component-scores input {
+            width: 100px;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .competitive-position {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .competitive-position.hidden {
+            display: none;
+        }
+
+        .position-badge {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .percentile {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .interpretation {
+            font-size: 18px;
+            color: #555;
+            padding: 15px;
+            background: #f7f9fc;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -74,6 +178,30 @@
             padding: 15px;
             border-radius: 10px;
             text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .stat-card.reach {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            border: 2px solid #ff6b6b;
+        }
+
+        .stat-card.match {
+            background: linear-gradient(135deg, #f0fff4 0%, #dcffe4 100%);
+            border: 2px solid #51cf66;
+        }
+
+        .stat-card.safety {
+            background: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%);
+            border: 2px solid #845ef7;
+        }
+
+        .stat-card small {
+            display: block;
+            color: #888;
+            font-size: 0.75em;
+            margin-top: 5px;
         }
 
         .stat-value {
@@ -207,25 +335,60 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎯 GP MatchMaker</h1>
-        <p class="subtitle">Smart ranking for GP ST1 positions - Optimized for Egyptian IMGs</p>
+        <h1>🎯 GP MatchMaker 2025</h1>
+        <p class="subtitle">Strategic ranking optimizer based on real MSRA data - Competition ratio 4.91:1</p>
+
+        <!-- MSRA Score Input Section -->
+        <div class="msra-input-section">
+            <h2>Enter Your MSRA Score</h2>
+            <div class="score-input-group">
+                <input type="number" id="msraTotal" placeholder="Total Score (400-650)" min="400" max="650"
+                       onchange="updateCompetitivePosition()">
+                <span class="or-divider">OR</span>
+                <div class="component-scores">
+                    <input type="number" id="msraPD" placeholder="PD Score" min="150" max="350">
+                    <span>+</span>
+                    <input type="number" id="msraCPS" placeholder="CPS Score" min="150" max="350">
+                    <button onclick="calculateFromComponents()">Calculate</button>
+                </div>
+            </div>
+
+            <div id="competitivePosition" class="competitive-position hidden">
+                <div class="position-badge">
+                    <span id="scoreDisplay" class="score-display"></span>
+                    <span id="percentile" class="percentile"></span>
+                </div>
+                <div class="interpretation">
+                    <span id="scoreInterpretation"></span>
+                </div>
+            </div>
+        </div>
 
         <div class="stats">
             <div class="stat-card">
-                <div class="stat-value" id="totalSchemes">0</div>
-                <div class="stat-label">Total Schemes</div>
+                <div class="stat-value" id="reachableSchemes">-</div>
+                <div class="stat-label">Realistic Options</div>
+                <small>Based on your score</small>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="viableSchemes">0</div>
-                <div class="stat-label">With Vacancies</div>
+                <div class="stat-value">4.91:1</div>
+                <div class="stat-label">Competition</div>
+                <small>National average</small>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="totalPlaces">0</div>
-                <div class="stat-label">Total Places</div>
+            <div class="stat-card reach">
+                <div class="stat-value" id="reachCount">-</div>
+                <div class="stat-label">🎯 Reach</div>
+                <small>Worth trying</small>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="dataComplete">0%</div>
-                <div class="stat-label">Data Complete</div>
+            <div class="stat-card match">
+                <div class="stat-value" id="matchCount">-</div>
+                <div class="stat-label">✅ Match</div>
+                <small>Good chances</small>
+            </div>
+            <div class="stat-card safety">
+                <div class="stat-value" id="safetyCount">-</div>
+                <div class="stat-label">🛡️ Safety</div>
+                <small>Very likely</small>
             </div>
         </div>
 
@@ -970,9 +1133,232 @@
             scheme.score = 0;
             scheme.notes = '';
             scheme.hospitals = hospitalLocations[scheme.rank] || [];
+            // Add competition fields
+            scheme.competitionLevel = null;
+            scheme.minMSRA = null;
+            scheme.probability = null;
+            scheme.strategicCategory = null;
         });
 
         let currentData = [...schemes];
+        let userMSRAScore = null;
+
+        // MSRA Score Thresholds based on 2025 real data
+        const MSRA_THRESHOLDS = {
+            // EXTREME COMPETITION (545+)
+            'london': { min: 545, typical: 550, competitive: 570 },
+            'oxford': { min: 545, typical: 555, competitive: 575 },
+            'cambridge': { min: 545, typical: 555, competitive: 575 },
+
+            // VERY HIGH (580-590)
+            'birmingham': { min: 580, typical: 590, competitive: 600 },
+            'leeds': { min: 575, typical: 580, competitive: 590 },
+            'sheffield': { min: 570, typical: 575, competitive: 585 },
+            'bristol': { min: 580, typical: 585, competitive: 595 },
+            'manchester': { min: 580, typical: 590, competitive: 600 },
+
+            // HIGH (560-580)
+            'edinburgh': { min: 575, typical: 580, competitive: 590 },
+            'glasgow': { min: 570, typical: 574, competitive: 585 },
+            'cardiff': { min: 560, typical: 570, competitive: 580 },
+
+            // MODERATE (520-560)
+            'wessex': { min: 545, typical: 551, competitive: 560 },
+            'somerset': { min: 503, typical: 520, competitive: 540 },
+
+            // LOW (500-540)
+            'northern_ireland': { min: 518, typical: 530, competitive: 540 },
+            'rural_scotland': { min: 500, typical: 520, competitive: 540 },
+            'ex_ters': { min: 490, typical: 510, competitive: 530 }
+        };
+
+        // Ex-TERS areas (historically hard to fill)
+        const EX_TERS_AREAS = [
+            'lincolnshire', 'cumbria', 'hull', 'blackpool',
+            'doncaster', 'grimsby', 'scarborough', 'highlands'
+        ];
+
+        // Calculate competitive position for a given MSRA score
+        function updateCompetitivePosition() {
+            const score = parseInt(document.getElementById('msraTotal').value);
+            if (!score || score < 400 || score > 650) {
+                document.getElementById('competitivePosition').classList.add('hidden');
+                return;
+            }
+
+            userMSRAScore = score;
+            const position = document.getElementById('competitivePosition');
+            position.classList.remove('hidden');
+
+            // Calculate percentile (approximation based on normal distribution)
+            const mean = 500; // Normalized mean
+            const sd = 40; // Standard deviation per paper, so total ~80
+            const z = (score - mean) / 80;
+            const percentile = Math.round(normalCDF(z) * 100);
+
+            document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+            document.getElementById('percentile').textContent = `Top ${100 - percentile}%`;
+
+            // Provide interpretation
+            let interpretation = '';
+            if (score >= 580) {
+                interpretation = '🎉 Excellent! Competitive for all schemes including London/Oxford';
+            } else if (score >= 550) {
+                interpretation = '✅ Very good! Competitive for most schemes, London/Oxford possible';
+            } else if (score >= 520) {
+                interpretation = '👍 Good! Competitive for most non-London schemes';
+            } else if (score >= 500) {
+                interpretation = '⚠️ Average. Focus on less competitive areas and ex-TERS regions';
+            } else if (score >= 480) {
+                interpretation = '😟 Below average. Target rural areas and Northern Ireland';
+            } else {
+                interpretation = '🚨 Very challenging. Consider all options including re-sitting';
+            }
+
+            document.getElementById('scoreInterpretation').textContent = interpretation;
+
+            // Update all scheme probabilities
+            calculateStrategicScores();
+            updateStatCards();
+        }
+
+        // Calculate from component scores
+        function calculateFromComponents() {
+            const pd = parseInt(document.getElementById('msraPD').value) || 0;
+            const cps = parseInt(document.getElementById('msraCPS').value) || 0;
+            if (pd && cps) {
+                const total = pd + cps;
+                document.getElementById('msraTotal').value = total;
+                updateCompetitivePosition();
+            }
+        }
+
+        // Normal CDF approximation
+        function normalCDF(z) {
+            const a1 = 0.254829592;
+            const a2 = -0.284496736;
+            const a3 = 1.421413741;
+            const a4 = -1.453152027;
+            const a5 = 1.061405429;
+            const p = 0.3275911;
+            const sign = z < 0 ? -1 : 1;
+            z = Math.abs(z) / Math.sqrt(2.0);
+            const t = 1.0 / (1.0 + p * z);
+            const t2 = t * t;
+            const t3 = t2 * t;
+            const t4 = t3 * t;
+            const t5 = t4 * t;
+            const y = 1 - ((((a5 * t5 + a4 * t4) + a3 * t3) + a2 * t2) + a1 * t) * Math.exp(-z * z);
+            return 0.5 * (1 + sign * y);
+        }
+
+        // Get threshold for a scheme based on location
+        function getThreshold(scheme) {
+            const location = ((scheme.area || '') + ' ' + (scheme.region || '') + ' ' + (scheme.scheme || '')).toLowerCase();
+
+            // Check exact matches first
+            if (location.includes('london')) return MSRA_THRESHOLDS['london'];
+            if (location.includes('oxford')) return MSRA_THRESHOLDS['oxford'];
+            if (location.includes('cambridge')) return MSRA_THRESHOLDS['cambridge'];
+            if (location.includes('birmingham')) return MSRA_THRESHOLDS['birmingham'];
+            if (location.includes('leeds') || location.includes('west yorkshire')) return MSRA_THRESHOLDS['leeds'];
+            if (location.includes('sheffield') || location.includes('south yorkshire')) return MSRA_THRESHOLDS['sheffield'];
+            if (location.includes('manchester')) return MSRA_THRESHOLDS['manchester'];
+            if (location.includes('bristol')) return MSRA_THRESHOLDS['bristol'];
+            if (location.includes('edinburgh')) return MSRA_THRESHOLDS['edinburgh'];
+            if (location.includes('glasgow')) return MSRA_THRESHOLDS['glasgow'];
+            if (location.includes('cardiff')) return MSRA_THRESHOLDS['cardiff'];
+            if (location.includes('northern ireland') || location.includes('belfast')) return MSRA_THRESHOLDS['northern_ireland'];
+
+            // Check for ex-TERS areas
+            if (EX_TERS_AREAS.some(area => location.includes(area))) {
+                return MSRA_THRESHOLDS['ex_ters'];
+            }
+
+            // Check for rural areas
+            if (location.includes('rural') || location.includes('highlands') || location.includes('island')) {
+                return MSRA_THRESHOLDS['rural_scotland'];
+            }
+
+            // Scotland general
+            if (location.includes('scotland')) {
+                return { min: 520, typical: 540, competitive: 560 };
+            }
+
+            // Wales general
+            if (location.includes('wales')) {
+                return { min: 510, typical: 530, competitive: 550 };
+            }
+
+            // Default moderate competition
+            return { min: 530, typical: 550, competitive: 570 };
+        }
+
+        // Calculate strategic scores for all schemes
+        function calculateStrategicScores() {
+            if (!userMSRAScore) return;
+
+            schemes.forEach(scheme => {
+                const threshold = getThreshold(scheme);
+                scheme.minMSRA = threshold.min;
+
+                // Calculate probability of success
+                const scoreDiff = userMSRAScore - threshold.min;
+                let probability = 0;
+
+                if (scheme.places === 0) {
+                    probability = 0; // Impossible
+                    scheme.competitionLevel = 'IMPOSSIBLE';
+                } else {
+                    if (scoreDiff > 30) probability = 95;
+                    else if (scoreDiff > 15) probability = 80;
+                    else if (scoreDiff > 0) probability = 60;
+                    else if (scoreDiff > -10) probability = 35;
+                    else if (scoreDiff > -20) probability = 15;
+                    else probability = 5;
+
+                    // Adjust for number of places
+                    if (scheme.places === 1) probability *= 0.5;
+                    else if (scheme.places > 30) probability = Math.min(100, probability * 1.2);
+                    else if (scheme.places > 20) probability = Math.min(100, probability * 1.1);
+
+                    // Determine competition level
+                    if (threshold.min >= 580) scheme.competitionLevel = 'EXTREME';
+                    else if (threshold.min >= 560) scheme.competitionLevel = 'VERY HIGH';
+                    else if (threshold.min >= 540) scheme.competitionLevel = 'HIGH';
+                    else if (threshold.min >= 520) scheme.competitionLevel = 'MODERATE';
+                    else scheme.competitionLevel = 'LOW';
+                }
+
+                scheme.probability = Math.round(probability);
+
+                // Strategic category
+                if (scoreDiff > 20) scheme.strategicCategory = 'SAFETY';
+                else if (scoreDiff > -20) scheme.strategicCategory = 'MATCH';
+                else scheme.strategicCategory = 'REACH';
+
+                // Update overall score to include strategic value
+                scheme.strategicScore = probability * (scheme.places > 0 ? 1 : 0);
+            });
+
+            currentData = [...schemes];
+            renderTable();
+        }
+
+        // Update stat cards based on MSRA score
+        function updateStatCards() {
+            if (!userMSRAScore) return;
+
+            const reachable = schemes.filter(s => s.probability > 20).length;
+            const reach = schemes.filter(s => s.strategicCategory === 'REACH').length;
+            const match = schemes.filter(s => s.strategicCategory === 'MATCH').length;
+            const safety = schemes.filter(s => s.strategicCategory === 'SAFETY').length;
+
+            document.getElementById('reachableSchemes').textContent = reachable;
+            document.getElementById('reachCount').textContent = reach;
+            document.getElementById('matchCount').textContent = match;
+            document.getElementById('safetyCount').textContent = safety;
+        }
 
         function renderTable() {
             const tbody = document.getElementById('tableBody');
