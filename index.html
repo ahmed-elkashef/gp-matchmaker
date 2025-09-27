@@ -62,62 +62,109 @@
             transform: translateY(-2px);
         }
 
-        /* MSRA Input Section Styles */
-        .msra-input-section {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 25px;
+        /* Setup Section Styles */
+        .setup-section {
+            background: white;
+            border: 1px solid #e2e8f0;
             border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .msra-input-section h2 {
-            color: #333;
-            margin-bottom: 20px;
+        .step-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .step-number {
+            background: rgba(255,255,255,0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .step-header h2 {
+            margin: 0;
             font-size: 1.4em;
         }
 
-        .score-input-group {
+        .msra-input-row {
+            padding: 25px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 30px;
             flex-wrap: wrap;
         }
 
-        #msraTotal {
+        .msra-main-input {
             font-size: 24px;
-            padding: 15px;
-            width: 200px;
+            padding: 15px 20px;
+            width: 280px;
             border: 2px solid #667eea;
-            border-radius: 10px;
+            border-radius: 12px;
             text-align: center;
             font-weight: bold;
+            transition: all 0.3s;
         }
 
-        .or-divider {
-            color: #999;
-            font-weight: 500;
+        .msra-main-input:focus {
+            outline: none;
+            border-color: #5a67d8;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .component-scores {
+        .component-alternative {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .component-alternative small {
+            color: #666;
+            font-style: italic;
+        }
+
+        .component-inputs {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .component-scores input {
-            width: 100px;
-            padding: 10px;
+        .component-input {
+            width: 80px;
+            padding: 8px;
             border: 1px solid #cbd5e0;
             border-radius: 8px;
             text-align: center;
         }
 
+        .calc-btn {
+            padding: 8px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
         .competitive-position {
-            margin-top: 20px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
+            margin: 25px;
+            margin-top: 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            border-top: 3px solid #667eea;
             animation: slideIn 0.3s ease-out;
         }
 
@@ -125,34 +172,52 @@
             display: none;
         }
 
-        .position-badge {
+        .position-display {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            gap: 25px;
+            flex-wrap: wrap;
         }
 
-        .score-display {
-            font-size: 32px;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .percentile {
-            background: #667eea;
+        .score-circle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 500;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
 
-        .interpretation {
-            font-size: 18px;
+        .score-interpretation {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .score-interpretation span {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        #percentile {
+            background: #48bb78;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+
+        #scoreInterpretation {
+            font-size: 16px;
             color: #555;
-            padding: 15px;
-            background: #f7f9fc;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            font-weight: 500;
+            margin-top: 8px;
         }
 
         @keyframes slideIn {
@@ -167,64 +232,119 @@
         }
 
         /* Profile Selection Styles */
-        .profile-section {
-            background: #f7f9fc;
+        .profile-grid {
             padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-
-        .profile-section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.3em;
-        }
-
-        .profile-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
         }
 
-        .profile-card {
+        .profile-option {
             background: white;
-            border: 2px solid #e0e0e0;
-            padding: 15px;
+            border: 2px solid #e2e8f0;
+            padding: 20px;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
         }
 
-        .profile-card:hover {
+        .profile-option:hover {
             border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
         }
 
-        .profile-card.selected {
+        .profile-option.selected {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-color: #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
 
-        .profile-emoji {
-            font-size: 32px;
-            display: block;
-            margin-bottom: 10px;
+        .profile-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
         }
 
-        .profile-card strong {
-            display: block;
-            margin-bottom: 5px;
+        .profile-name {
             font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
-        .profile-card small {
-            display: block;
+        .profile-desc {
+            font-size: 0.9em;
             opacity: 0.8;
-            font-size: 0.85em;
+        }
+
+        .profile-option.selected .profile-desc {
+            opacity: 0.9;
+        }
+
+        .custom-panel {
+            margin: 20px 25px 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .custom-panel.hidden {
+            display: none;
+        }
+
+        .slider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .preference-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .preference-control label {
+            flex: 0 0 120px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .preference-control input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .preference-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+        }
+
+        .weight-display {
+            flex: 0 0 30px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
         }
 
         .custom-preferences {
@@ -260,42 +380,64 @@
             color: #667eea;
         }
 
-        .stats {
+        /* Results Dashboard Styles */
+        .results-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .results-section.hidden {
+            display: none;
+        }
+
+        .dashboard-stats {
+            padding: 25px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
         }
 
         .stat-card {
-            background: #f7f9fc;
-            padding: 15px;
-            border-radius: 10px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
-            position: relative;
+            border-left: 4px solid #cbd5e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             transition: all 0.3s;
         }
 
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
         .stat-card.reach {
+            border-left-color: #ff6b6b;
             background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
-            border: 2px solid #ff6b6b;
         }
 
         .stat-card.match {
+            border-left-color: #51cf66;
             background: linear-gradient(135deg, #f0fff4 0%, #dcffe4 100%);
-            border: 2px solid #51cf66;
         }
 
         .stat-card.safety {
+            border-left-color: #845ef7;
             background: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%);
-            border: 2px solid #845ef7;
         }
 
-        .stat-card small {
-            display: block;
-            color: #888;
-            font-size: 0.75em;
-            margin-top: 5px;
+        .stat-card.total {
+            border-left-color: #667eea;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
         }
 
         .stat-value {
@@ -310,29 +452,54 @@
             margin-top: 5px;
         }
 
+        .table-container {
+            padding: 0;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            background: white;
         }
 
         th {
-            background: #f7f9fc;
-            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 12px;
             text-align: left;
             font-weight: 600;
-            color: #333;
+            font-size: 0.9em;
             position: sticky;
             top: 0;
             z-index: 10;
+            border-bottom: 2px solid #5a67d8;
+        }
+
+        th:first-child {
+            border-top-left-radius: 0;
+        }
+
+        th:last-child {
+            border-top-right-radius: 0;
         }
 
         td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 15px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #fafbfc;
         }
 
         tr:hover {
-            background: #f7f9fc;
+            background: #f0f4ff !important;
+            transform: scale(1.01);
+            transition: all 0.2s;
         }
 
         .rank-badge {
@@ -378,32 +545,88 @@
         .medium-score { color: #ed8936; }
         .low-score { color: #e53e3e; }
 
-        .filter-section {
-            background: #f7f9fc;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        .controls-section {
+            padding: 25px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .filter-group {
+        .filters-row {
             display: flex;
             gap: 20px;
             align-items: center;
             flex-wrap: wrap;
+            margin-bottom: 15px;
         }
 
-        .filter-group label {
+        .search-input {
+            padding: 12px 16px;
+            width: 300px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-toggle {
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            background: white;
+            border: 1px solid #e2e8f0;
         }
 
-        #searchBox {
-            padding: 10px;
-            width: 300px;
-            border: 2px solid #cbd5e0;
+        .filter-toggle:hover {
+            background: #f7f9fc;
+            border-color: #cbd5e0;
+        }
+
+        .filter-toggle input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #667eea;
+        }
+
+        .actions-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
             border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: #718096;
+        }
+
+        .action-btn.secondary:hover {
+            background: #4a5568;
         }
 
         .loading {
@@ -424,154 +647,250 @@
 
         select {
             width: 100px;
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .msra-input-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .msra-main-input {
+                width: 100%;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .table-container {
+                max-height: 400px;
+            }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 0.85em;
+            }
+        }
+
+        /* Loading and empty states */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        /* Utility classes */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .text-bold { font-weight: bold; }
+        .text-muted { color: #718096; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎯 GP MatchMaker 2025</h1>
-        <p class="subtitle">Strategic ranking optimizer based on real MSRA data - Competition ratio 4.91:1</p>
+        <p class="subtitle">Smart ranking optimizer • Competition ratio 4.91:1 • Based on real MSRA data</p>
 
-        <!-- MSRA Score Input Section -->
-        <div class="msra-input-section">
-            <h2>Enter Your MSRA Score</h2>
-            <div class="score-input-group">
-                <input type="number" id="msraTotal" placeholder="Total Score (400-650)" min="400" max="650"
-                       onchange="updateCompetitivePosition()">
-                <span class="or-divider">OR</span>
-                <div class="component-scores">
-                    <input type="number" id="msraPD" placeholder="PD Score" min="150" max="350">
-                    <span>+</span>
-                    <input type="number" id="msraCPS" placeholder="CPS Score" min="150" max="350">
-                    <button onclick="calculateFromComponents()">Calculate</button>
+        <!-- Step 1: MSRA Score -->
+        <div class="setup-section">
+            <div class="step-header">
+                <span class="step-number">1</span>
+                <h2>Your MSRA Score</h2>
+            </div>
+
+            <div class="msra-input-row">
+                <input type="number" id="msraTotal" placeholder="Enter total score (400-650)" min="400" max="650"
+                       onchange="updateCompetitivePosition()" class="msra-main-input">
+
+                <div class="component-alternative">
+                    <small>or enter components:</small>
+                    <div class="component-inputs">
+                        <input type="number" id="msraPD" placeholder="PD" min="150" max="350" class="component-input">
+                        <span>+</span>
+                        <input type="number" id="msraCPS" placeholder="CPS" min="150" max="350" class="component-input">
+                        <button onclick="calculateFromComponents()" class="calc-btn">→</button>
+                    </div>
                 </div>
             </div>
 
             <div id="competitivePosition" class="competitive-position hidden">
-                <div class="position-badge">
-                    <span id="scoreDisplay" class="score-display"></span>
-                    <span id="percentile" class="percentile"></span>
-                </div>
-                <div class="interpretation">
-                    <span id="scoreInterpretation"></span>
+                <div class="position-display">
+                    <div class="score-circle">
+                        <span id="scoreDisplay"></span>
+                    </div>
+                    <div class="score-interpretation">
+                        <span id="percentile"></span>
+                        <span id="scoreInterpretation"></span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- User Profile Selection -->
-        <div class="profile-section">
-            <h2>Select Your Profile</h2>
-            <div class="profile-cards">
-                <button class="profile-card" onclick="setProfile('international')">
-                    <span class="profile-emoji">🌍</span>
-                    <strong>International Graduate</strong>
-                    <small>Diverse communities, good transport links</small>
+        <!-- Step 2: Profile Selection -->
+        <div class="setup-section">
+            <div class="step-header">
+                <span class="step-number">2</span>
+                <h2>Your Priorities</h2>
+            </div>
+
+            <div class="profile-grid">
+                <button class="profile-option" onclick="setProfile('international')">
+                    <span class="profile-icon">🌍</span>
+                    <span class="profile-name">International</span>
+                    <span class="profile-desc">Diverse & connected</span>
                 </button>
 
-                <button class="profile-card" onclick="setProfile('family')">
-                    <span class="profile-emoji">👨‍👩‍👧</span>
-                    <strong>Family-Focused</strong>
-                    <small>Safe areas, good schools, affordable</small>
+                <button class="profile-option" onclick="setProfile('family')">
+                    <span class="profile-icon">👨‍👩‍👧</span>
+                    <span class="profile-name">Family</span>
+                    <span class="profile-desc">Safe & affordable</span>
                 </button>
 
-                <button class="profile-card" onclick="setProfile('explorer')">
-                    <span class="profile-emoji">🗺️</span>
-                    <strong>Explorer</strong>
-                    <small>Open to rural, new experiences</small>
+                <button class="profile-option" onclick="setProfile('explorer')">
+                    <span class="profile-icon">🗺️</span>
+                    <span class="profile-name">Explorer</span>
+                    <span class="profile-desc">New experiences</span>
                 </button>
 
-                <button class="profile-card" onclick="setProfile('saver')">
-                    <span class="profile-emoji">💰</span>
-                    <strong>Cost-Conscious</strong>
-                    <small>Maximize savings potential</small>
+                <button class="profile-option" onclick="setProfile('saver')">
+                    <span class="profile-icon">💰</span>
+                    <span class="profile-name">Saver</span>
+                    <span class="profile-desc">Max savings</span>
                 </button>
 
-                <button class="profile-card" onclick="setProfile('career')">
-                    <span class="profile-emoji">📈</span>
-                    <strong>Career-Focused</strong>
-                    <small>Teaching hospitals, research opportunities</small>
+                <button class="profile-option" onclick="setProfile('career')">
+                    <span class="profile-icon">📈</span>
+                    <span class="profile-name">Career</span>
+                    <span class="profile-desc">Best training</span>
                 </button>
 
-                <button class="profile-card" onclick="toggleCustom()">
-                    <span class="profile-emoji">⚙️</span>
-                    <strong>Custom Preferences</strong>
-                    <small>Fine-tune your priorities</small>
+                <button class="profile-option custom-btn" onclick="toggleCustom()">
+                    <span class="profile-icon">⚙️</span>
+                    <span class="profile-name">Custom</span>
+                    <span class="profile-desc">Fine-tune</span>
                 </button>
             </div>
 
-            <!-- Custom preference sliders (hidden by default) -->
-            <div id="customPreferences" class="custom-preferences hidden">
-                <div class="preference-slider">
-                    <label>🌍 International Community</label>
-                    <input type="range" id="intlWeight" min="0" max="10" value="5">
-                    <span class="weight-value">5</span>
+            <div id="customPreferences" class="custom-panel hidden">
+                <div class="slider-grid">
+                    <div class="preference-control">
+                        <label>🌍 Diversity</label>
+                        <input type="range" id="intlWeight" min="0" max="10" value="5">
+                        <span class="weight-display">5</span>
+                    </div>
+                    <div class="preference-control">
+                        <label>💰 Savings</label>
+                        <input type="range" id="savingsWeight" min="0" max="10" value="5">
+                        <span class="weight-display">5</span>
+                    </div>
+                    <div class="preference-control">
+                        <label>✈️ Transport</label>
+                        <input type="range" id="transportWeight" min="0" max="10" value="5">
+                        <span class="weight-display">5</span>
+                    </div>
+                    <div class="preference-control">
+                        <label>🏡 Quality</label>
+                        <input type="range" id="qolWeight" min="0" max="10" value="5">
+                        <span class="weight-display">5</span>
+                    </div>
+                    <div class="preference-control">
+                        <label>📚 Career</label>
+                        <input type="range" id="careerWeight" min="0" max="10" value="5">
+                        <span class="weight-display">5</span>
+                    </div>
                 </div>
-                <div class="preference-slider">
-                    <label>💰 Savings Potential</label>
-                    <input type="range" id="savingsWeight" min="0" max="10" value="5">
-                    <span class="weight-value">5</span>
-                </div>
-                <div class="preference-slider">
-                    <label>✈️ Transport Links</label>
-                    <input type="range" id="transportWeight" min="0" max="10" value="5">
-                    <span class="weight-value">5</span>
-                </div>
-                <div class="preference-slider">
-                    <label>🏡 Quality of Life</label>
-                    <input type="range" id="qolWeight" min="0" max="10" value="5">
-                    <span class="weight-value">5</span>
-                </div>
-                <div class="preference-slider">
-                    <label>📚 Career Development</label>
-                    <input type="range" id="careerWeight" min="0" max="10" value="5">
-                    <span class="weight-value">5</span>
-                </div>
-                <button onclick="applyCustomPreferences()">Apply Custom Preferences</button>
+                <button onclick="applyCustomPreferences()" class="apply-btn">Apply Settings</button>
             </div>
         </div>
 
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="reachableSchemes">-</div>
-                <div class="stat-label">Realistic Options</div>
-                <small>Based on your score</small>
+        <!-- Results Dashboard -->
+        <div class="results-section">
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-number" id="reachableSchemes">-</div>
+                    <div class="stat-name">Realistic Options</div>
+                </div>
+                <div class="stat-box reach">
+                    <div class="stat-number" id="reachCount">-</div>
+                    <div class="stat-name">🎯 Reach</div>
+                </div>
+                <div class="stat-box match">
+                    <div class="stat-number" id="matchCount">-</div>
+                    <div class="stat-name">✅ Match</div>
+                </div>
+                <div class="stat-box safety">
+                    <div class="stat-number" id="safetyCount">-</div>
+                    <div class="stat-name">🛡️ Safety</div>
+                </div>
+                <div class="stat-box ratio">
+                    <div class="stat-number">4.91:1</div>
+                    <div class="stat-name">Competition</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value">4.91:1</div>
-                <div class="stat-label">Competition</div>
-                <small>National average</small>
-            </div>
-            <div class="stat-card reach">
-                <div class="stat-value" id="reachCount">-</div>
-                <div class="stat-label">🎯 Reach</div>
-                <small>Worth trying</small>
-            </div>
-            <div class="stat-card match">
-                <div class="stat-value" id="matchCount">-</div>
-                <div class="stat-label">✅ Match</div>
-                <small>Good chances</small>
-            </div>
-            <div class="stat-card safety">
-                <div class="stat-value" id="safetyCount">-</div>
-                <div class="stat-label">🛡️ Safety</div>
-                <small>Very likely</small>
-            </div>
-        </div>
 
-        <div class="filter-section">
-            <div class="filter-group">
-                <button onclick="calculateScores()">🔄 Calculate Scores</button>
-                <button onclick="sortByScore()">📊 Sort by Score</button>
-                <button onclick="exportRanking()">💾 Export Ranking</button>
-                <button onclick="resetData()">🗑️ Reset Data</button>
-                <input type="text" id="searchBox" placeholder="🔍 Search schemes..." onkeyup="filterTable()">
+            <div class="action-bar">
+                <div class="search-section">
+                    <input type="text" id="searchBox" placeholder="🔍 Search location..." onkeyup="filterTable()" class="search-input">
+                </div>
+                <div class="filter-chips">
+                    <label class="filter-chip">
+                        <input type="checkbox" id="hideNoPlaces" onchange="filterTable()">
+                        <span>Hide 0 places</span>
+                    </label>
+                    <label class="filter-chip">
+                        <input type="checkbox" id="showRealistic" onchange="filterTable()">
+                        <span>Only realistic (>20%)</span>
+                    </label>
+                    <label class="filter-chip">
+                        <input type="checkbox" id="showIdeal" onchange="filterTable()">
+                        <span>Only ideal matches</span>
+                    </label>
+                </div>
+                <button onclick="exportOptimizedRanking()" class="export-btn">
+                    📋 Export for Oriel
+                </button>
             </div>
-        </div>
-
-        <div class="controls">
-            <label><input type="checkbox" id="hideNoPlaces" onchange="filterTable()"> Hide schemes with 0 places</label>
-            <label><input type="checkbox" id="onlyGoodSafety" onchange="filterTable()"> Only safety 40-70</label>
-            <label><input type="checkbox" id="minSavings" onchange="filterTable()"> Min £500 savings</label>
         </div>
 
         <div style="overflow-x: auto;">
