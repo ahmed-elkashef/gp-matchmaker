@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GP MatchMaker - Smart Ranking Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f7f9fc;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f7f9fc;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f7f9fc;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .places-badge {
+            background: #48bb78;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .no-places {
+            background: #e53e3e;
+        }
+
+        input[type="number"], input[type="text"], select {
+            padding: 6px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            width: 80px;
+            font-size: 14px;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .score {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .high-score { color: #48bb78; }
+        .medium-score { color: #ed8936; }
+        .low-score { color: #e53e3e; }
+
+        .filter-section {
+            background: #f7f9fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        #searchBox {
+            padding: 10px;
+            width: 300px;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .scheme-name {
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .location-full {
+            font-size: 0.9em;
+            color: #718096;
+        }
+
+        select {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 GP MatchMaker</h1>
+        <p class="subtitle">Smart ranking for GP ST1 positions - Optimized for Egyptian IMGs</p>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSchemes">0</div>
+                <div class="stat-label">Total Schemes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="viableSchemes">0</div>
+                <div class="stat-label">With Vacancies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalPlaces">0</div>
+                <div class="stat-label">Total Places</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="dataComplete">0%</div>
+                <div class="stat-label">Data Complete</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-group">
+                <button onclick="calculateScores()">🔄 Calculate Scores</button>
+                <button onclick="sortByScore()">📊 Sort by Score</button>
+                <button onclick="exportRanking()">💾 Export Ranking</button>
+                <button onclick="resetData()">🗑️ Reset Data</button>
+                <input type="text" id="searchBox" placeholder="🔍 Search schemes..." onkeyup="filterTable()">
+            </div>
+        </div>
+
+        <div class="controls">
+            <label><input type="checkbox" id="hideNoPlaces" onchange="filterTable()"> Hide schemes with 0 places</label>
+            <label><input type="checkbox" id="onlyGoodSafety" onchange="filterTable()"> Only safety 40-70</label>
+            <label><input type="checkbox" id="minSavings" onchange="filterTable()"> Min £500 savings</label>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table id="schemesTable">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Scheme</th>
+                        <th>Places</th>
+                        <th>Main Hospitals/Training Sites</th>
+                        <th>Safety Index<br><small>(50 ideal)</small></th>
+                        <th>Monthly Savings<br><small>(£)</small></th>
+                        <th>Airport Dist<br><small>(miles)</small></th>
+                        <th>Direct Egypt</th>
+                        <th>City Pop<br><small>(000s)</small></th>
+                        <th>Transport<br><small>(1-10)</small></th>
+                        <th>IMG Community</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Hard-coded data from screenshots with hospital locations
+        const schemes = [
+            {rank: 1, region: "Yorkshire and the Humber", area: "West", scheme: "Leeds GP Scheme", start: "Aug", places: 22},
+            {rank: 2, region: "Yorkshire and the Humber", area: "South", scheme: "Sheffield GP Scheme", start: "Aug", places: 17},
+            {rank: 3, region: "North West", area: "Cheshire and Merseyside", scheme: "South Liverpool & Birkenhead", start: "Aug", places: 15},
+            {rank: 4, region: "Kent, Surrey and Sussex", area: "Sussex", scheme: "Brighton & Mid-Sussex", start: "Aug", places: 5},
+            {rank: 5, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Bolton", start: "Aug", places: 13},
+            {rank: 6, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Pennine Northwest (N. Manchester, Bury, Oldham & Rochdale)", start: "Aug", places: 13},
+            {rank: 7, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Salford & Trafford", start: "Aug", places: 12},
+            {rank: 8, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Central Manchester", start: "Aug", places: 13},
+            {rank: 9, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Lancaster", start: "Aug", places: 7},
+            {rank: 10, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Stockport", start: "Aug", places: 6},
+            {rank: 11, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "South Cumbria", start: "Aug", places: 6},
+            {rank: 12, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Tameside", start: "Aug", places: 3},
+            {rank: 13, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Blackpool", start: "Aug", places: 0},
+            {rank: 14, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "East Lancashire (Blackburn/Burnley)", start: "Aug", places: 0},
+            {rank: 15, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Greater Manchester Deprivation", start: "Aug", places: 1},
+            {rank: 16, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Preston, Chorley & District", start: "Aug", places: 0},
+            {rank: 17, region: "North West", area: "Greater Manchester, Lancashire and South Cumbria", scheme: "Wigan", start: "Aug", places: 10},
+            {rank: 18, region: "Northern", area: "Northumberland & Newcastle/Gateshead", scheme: "Northumbria GP Programme (Scheme 103)", start: "Aug", places: 39},
+            {rank: 19, region: "Northern", area: "Durham & Tees Valley", scheme: "Durham & Tees Valley GP Programme (Scheme 101)", start: "Aug", places: 34},
+            {rank: 20, region: "Northern", area: "North Cumbria", scheme: "North Cumbria GP Programme (Scheme 102)", start: "Aug", places: 14},
+            {rank: 21, region: "Yorkshire and the Humber", area: "West", scheme: "Bradford GP Scheme", start: "Aug", places: 15},
+            {rank: 22, region: "North West", area: "Cheshire and Merseyside", scheme: "Crewe", start: "Aug", places: 7},
+            {rank: 23, region: "Yorkshire and the Humber", area: "East", scheme: "Hull & East Riding GP Scheme", start: "Aug", places: 6},
+            {rank: 24, region: "Yorkshire and the Humber", area: "East", scheme: "York GP Scheme", start: "Aug", places: 3},
+            {rank: 25, region: "East Midlands", area: "Nottinghamshire", scheme: "Nottingham", start: "Aug", places: 6},
+            {rank: 26, region: "West Midlands", area: "", scheme: "Birmingham/Solihull", start: "Aug", places: 14},
+            {rank: 27, region: "West Midlands", area: "", scheme: "Coventry & Warwickshire", start: "Aug", places: 14},
+            {rank: 28, region: "West Midlands", area: "", scheme: "Black Country", start: "Aug", places: 15},
+            {rank: 29, region: "Wales", area: "South", scheme: "Cardiff Area", start: "Aug", places: 0},
+            {rank: 30, region: "Wales", area: "West", scheme: "Swansea Area", start: "Aug", places: 1},
+            {rank: 31, region: "Northern", area: "", scheme: "Northern", start: "Aug", places: 0},
+            {rank: 32, region: "Yorkshire and the Humber", area: "West", scheme: "Airedale GP Scheme", start: "Aug", places: 2},
+            {rank: 33, region: "Yorkshire and the Humber", area: "South", scheme: "Barnsley GP Scheme", start: "Aug", places: 6},
+            {rank: 34, region: "Yorkshire and the Humber", area: "South", scheme: "Doncaster & Bassetlaw GP Scheme", start: "Aug", places: 22},
+            {rank: 35, region: "Yorkshire and the Humber", area: "East", scheme: "Harrogate GP Scheme", start: "Aug", places: 4},
+            {rank: 36, region: "Yorkshire and the Humber", area: "West", scheme: "Heart of Yorkshire GP Scheme", start: "Aug", places: 4},
+            {rank: 37, region: "Yorkshire and the Humber", area: "East", scheme: "Northallerton GP Scheme", start: "Aug", places: 4},
+            {rank: 38, region: "Yorkshire and the Humber", area: "East", scheme: "Northern Lincolnshire GP Scheme", start: "Aug", places: 8},
+            {rank: 39, region: "Yorkshire and the Humber", area: "West", scheme: "Pennine GP Scheme", start: "Aug", places: 0},
+            {rank: 40, region: "Yorkshire and the Humber", area: "South", scheme: "Rotherham GP Scheme", start: "Aug", places: 8},
+            {rank: 41, region: "Thames Valley Oxford", area: "Buckinghamshire Healthcare NHS Trust", scheme: "Buckinghamshire Healthcare NHS Trust", start: "Aug", places: 2, wte: 1},
+            {rank: 42, region: "North West", area: "Cheshire and Merseyside", scheme: "Wirral", start: "Aug", places: 12},
+            {rank: 43, region: "North West", area: "Cheshire and Merseyside", scheme: "Chester", start: "Aug", places: 12},
+            {rank: 44, region: "North West", area: "Cheshire and Merseyside", scheme: "Macclesfield", start: "Aug", places: 11},
+            {rank: 45, region: "North West", area: "Cheshire and Merseyside", scheme: "Southport & Ormskirk", start: "Aug", places: 5},
+            {rank: 46, region: "North West", area: "Cheshire and Merseyside", scheme: "St Helens and Knowsley", start: "Aug", places: 12},
+            {rank: 47, region: "North West", area: "Cheshire and Merseyside", scheme: "Warrington and Halton", start: "Aug", places: 2},
+            {rank: 48, region: "East Midlands", area: "", scheme: "Boston", start: "Aug", places: 3},
+            {rank: 49, region: "East Midlands", area: "", scheme: "Chesterfield", start: "Aug", places: 2},
+            {rank: 50, region: "East of England", area: "Bedfordshire", scheme: "Bedford", start: "Aug", places: 0},
+            {rank: 51, region: "East Midlands", area: "", scheme: "Derby", start: "Aug", places: 3},
+            {rank: 52, region: "East Midlands", area: "", scheme: "Kettering and Northampton", start: "Aug", places: 4},
+            {rank: 53, region: "East Midlands", area: "", scheme: "Leicestershire", start: "Aug", places: 5},
+            {rank: 54, region: "East Midlands", area: "", scheme: "Lincoln", start: "Aug", places: 4},
+            {rank: 55, region: "East of England", area: "Suffolk", scheme: "Bury St. Edmunds", start: "Aug", places: 0},
+            {rank: 56, region: "East of England", area: "Cambridgeshire", scheme: "Cambridge", start: "Aug", places: 2},
+            {rank: 57, region: "East of England", area: "Norfolk", scheme: "Great Yarmouth", start: "Aug", places: 1},
+            {rank: 58, region: "East of England", area: "Hertfordshire", scheme: "Hemel Hempstead & Watford", start: "Aug", places: 0},
+            {rank: 59, region: "East of England", area: "Suffolk", scheme: "Ipswich", start: "Aug", places: 1},
+            {rank: 60, region: "East of England", area: "Norfolk", scheme: "Kings Lynn", start: "Aug", places: 1},
+            {rank: 61, region: "East of England", area: "Bedfordshire", scheme: "Luton", start: "Aug", places: 2},
+            {rank: 62, region: "East of England", area: "Norfolk", scheme: "Norwich", start: "Aug", places: 0},
+            {rank: 63, region: "East of England", area: "Cambridgeshire", scheme: "Peterborough", start: "Aug", places: 1},
+            {rank: 64, region: "East of England", area: "Hertfordshire", scheme: "Stevenage", start: "Aug", places: 3},
+            {rank: 65, region: "East of England", area: "Hertfordshire", scheme: "Welwyn Garden City", start: "Aug", places: 2},
+            {rank: 66, region: "East of England", area: "Cambridgeshire", scheme: "West Cambridgeshire (Huntingdon)", start: "Aug", places: 0},
+            {rank: 67, region: "South West", area: "Somerset", scheme: "Bath", start: "Aug", places: 0},
+            {rank: 68, region: "South West", area: "Bristol", scheme: "Bristol", start: "Aug", places: 1},
+            {rank: 69, region: "South West", area: "Cornwall", scheme: "Cornwall", start: "Aug", places: 3},
+            {rank: 70, region: "South West", area: "", scheme: "Exeter", start: "Aug", places: 1},
+            {rank: 71, region: "East Midlands", area: "", scheme: "Sherwood Forest", start: "Aug", places: 2},
+            {rank: 72, region: "South West", area: "", scheme: "Gloucestershire", start: "Aug", places: 2},
+            {rank: 73, region: "South West", area: "", scheme: "North Devon", start: "Aug", places: 0},
+            {rank: 74, region: "South West", area: "", scheme: "Plymouth", start: "Aug", places: 0},
+            {rank: 75, region: "South West", area: "", scheme: "Somerset", start: "Aug", places: 2},
+            {rank: 76, region: "South West", area: "", scheme: "Swindon", start: "Aug", places: 1},
+            {rank: 77, region: "South West", area: "", scheme: "Torbay", start: "Aug", places: 0},
+            {rank: 78, region: "South West", area: "", scheme: "Severn", start: "Aug", places: 0},
+            {rank: 79, region: "South West", area: "", scheme: "Peninsula", start: "Aug", places: 0},
+            {rank: 80, region: "Hereford & Worcester", area: "", scheme: "Hereford", start: "Aug", places: 4},
+            {rank: 81, region: "Hereford & Worcester", area: "", scheme: "Worcester South", start: "Aug", places: 6},
+            {rank: 82, region: "Staffordshire & Shropshire", area: "", scheme: "Shropshire", start: "Aug", places: 3},
+            {rank: 83, region: "Staffordshire & Shropshire", area: "", scheme: "Staffordshire East & South", start: "Aug", places: 7},
+            {rank: 84, region: "Staffordshire & Shropshire", area: "", scheme: "Staffordshire North", start: "Aug", places: 2},
+            {rank: 85, region: "Yorkshire and the Humber", area: "East", scheme: "Scarborough GP Scheme", start: "Aug", places: 0},
+            {rank: 86, region: "Kent, Surrey and Sussex", area: "Sussex", scheme: "East Sussex (Eastbourne & Hastings)", start: "Aug", places: 4},
+            {rank: 87, region: "Kent, Surrey and Sussex", area: "Surrey", scheme: "Chertsey", start: "Aug", places: 1},
+            {rank: 88, region: "Kent, Surrey and Sussex", area: "Surrey", scheme: "East Surrey", start: "Aug", places: 1},
+            {rank: 89, region: "Kent, Surrey and Sussex", area: "Kent", scheme: "Dartford", start: "Aug", places: 3},
+            {rank: 90, region: "Kent, Surrey and Sussex", area: "Kent", scheme: "East Kent (inc Ashford, Canterbury & Margate)", start: "Aug", places: 3},
+            {rank: 91, region: "Kent, Surrey and Sussex", area: "Surrey", scheme: "Epsom", start: "Aug", places: 2},
+            {rank: 92, region: "Kent, Surrey and Sussex", area: "Surrey", scheme: "Frimley", start: "Aug", places: 0},
+            {rank: 93, region: "Kent, Surrey and Sussex", area: "Surrey", scheme: "Guildford", start: "Aug", places: 1},
+            {rank: 94, region: "Kent, Surrey and Sussex", area: "Kent", scheme: "Maidstone & Tunbridge Wells", start: "Aug", places: 2},
+            {rank: 95, region: "Kent, Surrey and Sussex", area: "Kent", scheme: "Medway", start: "Aug", places: 4},
+            {rank: 96, region: "Kent, Surrey and Sussex", area: "Sussex", scheme: "Western Sussex Hospitals", start: "Aug", places: 4},
+            {rank: 97, region: "Thames Valley Oxford", area: "Frimley Health Foundation Trust", scheme: "Frimley Health Foundation Trust", start: "Aug", places: 4, wte: 1},
+            {rank: 98, region: "Thames Valley Oxford", area: "Royal Berkshire NHS Foundation Trust", scheme: "Royal Berkshire NHS Foundation Trust", start: "Aug", places: 2, wte: 1},
+            {rank: 99, region: "Thames Valley Oxford", area: "Oxford University Hospitals NHS Trust", scheme: "Oxford University Hospitals NHS Trust", start: "Aug", places: 1, wte: 1},
+            {rank: 100, region: "Thames Valley Oxford", area: "", scheme: "Thames Valley Oxford", start: "Aug", places: 1, wte: 1},
+            {rank: 101, region: "Thames Valley Oxford", area: "", scheme: "Thames Valley Oxford", start: "Aug", places: 0, wte: 1},
+            {rank: 102, region: "East of England", area: "Essex", scheme: "Basildon", start: "Aug", places: 0},
+            {rank: 103, region: "East of England", area: "Essex", scheme: "Chelmsford", start: "Aug", places: 0},
+            {rank: 104, region: "East of England", area: "Essex", scheme: "Colchester", start: "Aug", places: 0},
+            {rank: 105, region: "East of England", area: "Essex", scheme: "Harlow", start: "Aug", places: 1},
+            {rank: 106, region: "East of England", area: "Essex", scheme: "Southend", start: "Aug", places: 1},
+            {rank: 107, region: "Wessex", area: "North Hampshire", scheme: "North Hampshire", start: "Aug", places: 13},
+            {rank: 108, region: "Wessex", area: "Mid-Dorset", scheme: "Dorchester", start: "Aug", places: 0},
+            {rank: 109, region: "Wessex", area: "West Dorset", scheme: "West Dorset", start: "Aug", places: 0},
+            {rank: 110, region: "Wessex", area: "East Dorset", scheme: "East Dorset", start: "Aug", places: 1},
+            {rank: 111, region: "Wessex", area: "Isle of Wight", scheme: "Isle of Wight", start: "Aug", places: 2},
+            {rank: 112, region: "Wessex", area: "South East Hampshire", scheme: "Portsmouth", start: "Aug", places: 16},
+            {rank: 113, region: "Wessex", area: "South Wiltshire", scheme: "Salisbury", start: "Aug", places: 7},
+            {rank: 114, region: "Wessex", area: "South West Hampshire", scheme: "Southampton and New Forest", start: "Aug", places: 17},
+            {rank: 115, region: "Wessex", area: "Jersey", scheme: "Southampton with Jersey", start: "Aug", places: 2},
+            {rank: 116, region: "Northern Ireland", area: "", scheme: "Belfast Area Group", start: "", places: 1},
+            {rank: 117, region: "Northern Ireland", area: "", scheme: "North Western Area Group", start: "", places: 3},
+            {rank: 118, region: "Northern Ireland", area: "", scheme: "Northern Area Group (North Coast)", start: "", places: 1},
+            {rank: 119, region: "Northern Ireland", area: "", scheme: "Northern Area Group (South Antrim)", start: "", places: 2},
+            {rank: 120, region: "Northern Ireland", area: "", scheme: "South Eastern Area Group", start: "", places: 2},
+            {rank: 121, region: "Northern Ireland", area: "", scheme: "South Western Area Group", start: "", places: 1},
+            {rank: 122, region: "Northern Ireland", area: "", scheme: "Southern Area Group", start: "", places: 2},
+            {rank: 123, region: "Wales", area: "South", scheme: "Bridgend Area", start: "Aug", places: 1},
+            {rank: 124, region: "Wales", area: "West", scheme: "Carmarthen Area", start: "Aug", places: 2},
+            {rank: 125, region: "Wales", area: "South", scheme: "Gwent", start: "Aug", places: 1},
+            {rank: 126, region: "Wales", area: "North", scheme: "Dyffryn Clwyd", start: "Aug", places: 0},
+            {rank: 127, region: "Wales", area: "West", scheme: "Pembrokeshire", start: "Aug", places: 0},
+            {rank: 128, region: "Wales", area: "North", scheme: "Wrexham Area", start: "Aug", places: 0},
+            {rank: 129, region: "Wales", area: "South", scheme: "Glamorgan Valleys", start: "Aug", places: 0},
+            {rank: 130, region: "Wales", area: "West", scheme: "Aberystwyth Area", start: "Aug", places: 0},
+            {rank: 131, region: "Wales", area: "North", scheme: "Bangor Area", start: "Aug", places: 0},
+            {rank: 132, region: "Scotland Deanery", area: "West Region", scheme: "Lanarkshire", start: "Feb", places: 3, wte: 1},
+            {rank: 133, region: "Scotland Deanery", area: "West Region", scheme: "Glasgow South", start: "Feb", places: 4, wte: 1},
+            {rank: 134, region: "Scotland Deanery", area: "West Region", scheme: "Glasgow North West", start: "Feb", places: 0, wte: 1},
+            {rank: 135, region: "Scotland Deanery", area: "West Region", scheme: "Glasgow North East", start: "Feb", places: 1, wte: 1},
+            {rank: 136, region: "Scotland Deanery", area: "West Region", scheme: "Glasgow Clyde", start: "Feb", places: 3, wte: 1},
+            {rank: 137, region: "Scotland Deanery", area: "West Region", scheme: "Forth Valley", start: "Feb", places: 3, wte: 1},
+            {rank: 138, region: "Scotland Deanery", area: "West Region", scheme: "Dumfries & Galloway", start: "Feb", places: 2, wte: 1},
+            {rank: 139, region: "Scotland Deanery", area: "West Region", scheme: "Ayrshire & Arran", start: "Feb", places: 0, wte: 1},
+            {rank: 140, region: "Scotland Deanery", area: "South East Region", scheme: "West Lothian and West Edinburgh", start: "Feb", places: 2, wte: 1},
+            {rank: 141, region: "Scotland Deanery", area: "South East Region", scheme: "Fife and North Edinburgh", start: "Feb", places: 2, wte: 1},
+            {rank: 142, region: "Scotland Deanery", area: "South East Region", scheme: "Edinburgh Central", start: "Feb", places: 2, wte: 1},
+            {rank: 143, region: "Scotland Deanery", area: "South East Region", scheme: "Edinburgh and East Lothian", start: "Feb", places: 2, wte: 1},
+            {rank: 144, region: "Scotland Deanery", area: "South East Region", scheme: "Borders and Midlothian", start: "Feb", places: 2, wte: 1},
+            {rank: 145, region: "Scotland Deanery", area: "North Region", scheme: "Grampian", start: "Feb", places: 9, wte: 1},
+            {rank: 146, region: "Scotland Deanery", area: "North Region", scheme: "Caledonian", start: "Feb", places: 2, wte: 1},
+            {rank: 147, region: "Scotland Deanery", area: "North Region", scheme: "Caledonian", start: "Feb", places: 0, wte: 1},
+            {rank: 148, region: "Scotland Deanery", area: "North Region", scheme: "Caledonian", start: "Feb", places: 0, wte: 1},
+            {rank: 149, region: "Scotland Deanery", area: "North Region", scheme: "Caledonian", start: "Feb", places: 0, wte: 1},
+            {rank: 150, region: "Scotland Deanery", area: "North Region", scheme: "Caledonian", start: "Feb", places: 0, wte: 1},
+            {rank: 151, region: "Scotland Deanery", area: "East Region", scheme: "Westward", start: "Feb", places: 2, wte: 1},
+            {rank: 152, region: "Scotland Deanery", area: "East Region", scheme: "Eastward", start: "Feb", places: 0, wte: 1},
+            {rank: 153, region: "North West", area: "Cheshire and Merseyside", scheme: "Isle of Man", start: "Aug", places: 0},
+            {rank: 154, region: "Defence Medical Services", area: "", scheme: "Defence Medical Services", start: "", places: 0},
+            {rank: 155, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Western Isles)", start: "Feb", places: 0, wte: 1},
+            {rank: 156, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Shetland)", start: "Feb", places: 0, wte: 1},
+            {rank: 157, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Orkney)", start: "Feb", places: 0, wte: 1},
+            {rank: 158, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Oban)", start: "Feb", places: 0, wte: 1},
+            {rank: 159, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Lochgilphead)", start: "Feb", places: 0, wte: 1},
+            {rank: 160, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Fort William)", start: "Feb", places: 0, wte: 1},
+            {rank: 161, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Caithness)", start: "Feb", places: 0, wte: 1}
+        ];
+
+        // Hospital/training location data
+        const hospitalLocations = {
+            1: [ // Leeds - VERIFIED WITH OFFICIAL SOURCES
+                {name: "St James's University Hospital", address: "Beckett Street, Leeds, LS9 7TF", maps: "https://maps.google.com/?q=St+James+University+Hospital+Beckett+Street+Leeds+LS9+7TF", source: "https://www.yorksandhumberdeanery.nhs.uk/general_practice/leeds", verified: true},
+                {name: "Leeds General Infirmary", address: "Great George Street, Leeds, LS1 3EX", maps: "https://maps.google.com/?q=Leeds+General+Infirmary+Great+George+Street+Leeds+LS1+3EX", source: "https://www.yorksandhumberdeanery.nhs.uk/general_practice/leeds", verified: true},
+                {name: "Chapel Allerton Hospital", address: "Chapeltown Road, Leeds, LS7 4SA", maps: "https://maps.google.com/?q=Chapel+Allerton+Hospital+Chapeltown+Road+Leeds+LS7+4SA", source: "https://www.yorksandhumberdeanery.nhs.uk/general_practice/leeds", verified: true}
+            ],
+            2: [ // Sheffield - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Northern General Hospital", address: "Herries Road, Sheffield, S5 7AU", maps: "https://maps.google.com/?q=Northern+General+Hospital+Herries+Road+Sheffield+S5+7AU", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-south-yorkshire-sy/sheffield-teaching", verified: true},
+                {name: "Royal Hallamshire Hospital", address: "Glossop Road, Sheffield, S10 2JF", maps: "https://maps.google.com/?q=Royal+Hallamshire+Hospital+Glossop+Road+Sheffield+S10+2JF", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-south-yorkshire-sy/sheffield-teaching", verified: true},
+                {name: "Jessop Wing (Women's Hospital)", address: "Tree Root Walk, Sheffield, S10 2SF", maps: "https://maps.google.com/?q=Jessop+Wing+Tree+Root+Walk+Sheffield+S10+2SF", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-south-yorkshire-sy/sheffield-teaching", verified: true},
+                {name: "Sheffield Children's Hospital", address: "Western Bank, Sheffield, S10 2TH", maps: "https://maps.google.com/?q=Sheffield+Children's+Hospital+Western+Bank+Sheffield+S10+2TH", source: "https://www.yorksandhumberdeanery.nhs.uk/radiology/programme/sheffield/hospitals_on_the_rotation", verified: true}
+            ],
+            3: [ // South Liverpool & Birkenhead - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Royal Liverpool University Hospital", address: "Prescot Street, Liverpool, L7 8XP", maps: "https://maps.google.com/?q=Royal+Liverpool+University+Hospital+Prescot+Street+Liverpool+L7+8XP", source: "https://gp-training.hee.nhs.uk/mersey/locations/liverpool-birkenhead-2/", verified: true},
+                {name: "Aintree Hospital", address: "Longmoor Lane, Liverpool, L9 7AL", maps: "https://maps.google.com/?q=Aintree+Hospital+Longmoor+Lane+Liverpool+L9+7AL", source: "https://gp-training.hee.nhs.uk/mersey/locations/liverpool-birkenhead-2/", verified: true},
+                {name: "Liverpool Women's Hospital", address: "Crown Street, Liverpool, L8 7SS", maps: "https://maps.google.com/?q=Liverpool+Women's+Hospital+Crown+Street+Liverpool+L8+7SS", source: "https://gp-training.hee.nhs.uk/mersey/locations/liverpool-birkenhead-2/", verified: true},
+                {name: "Alder Hey Children's Hospital", address: "Eaton Road, Liverpool, L12 2AP", maps: "https://maps.google.com/?q=Alder+Hey+Children's+Hospital+Eaton+Road+Liverpool+L12+2AP", source: "https://gp-training.hee.nhs.uk/mersey/locations/liverpool-birkenhead-2/", verified: true},
+                {name: "Liverpool Heart and Chest Hospital", address: "Thomas Drive, Liverpool, L14 3PE", maps: "https://maps.google.com/?q=Liverpool+Heart+and+Chest+Hospital+Thomas+Drive+Liverpool+L14+3PE", source: "https://gp-training.hee.nhs.uk/mersey/locations/liverpool-birkenhead-2/", verified: true},
+                {name: "Walton Centre", address: "Lower Lane, Fazakerley, Liverpool, L9 7LJ", maps: "https://maps.google.com/?q=Walton+Centre+Lower+Lane+Fazakerley+Liverpool+L9+7LJ", source: "https://gp-training.hee.nhs.uk/mersey/locations/liverpool-birkenhead-2/", verified: true}
+            ],
+            4: [ // Brighton & Mid-Sussex - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Royal Sussex County Hospital", address: "Eastern Road, Brighton, BN2 5BE", maps: "https://maps.google.com/?q=Royal+Sussex+County+Hospital+Eastern+Road+Brighton+BN2+5BE", source: "https://gp-training.hee.nhs.uk/midsussex-brighton/your-training/hospital-posts/bsuh/", verified: true},
+                {name: "Princess Royal Hospital", address: "Lewes Road, Haywards Heath, RH16 4EX", maps: "https://maps.google.com/?q=Princess+Royal+Hospital+Lewes+Road+Haywards+Heath+RH16+4EX", source: "https://gp-training.hee.nhs.uk/midsussex-brighton/your-training/hospital-posts/bsuh/", verified: true}
+            ],
+            5: [ // Bolton - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Royal Bolton Hospital", address: "Minerva Road, Farnworth, Bolton, BL4 0JR", maps: "https://maps.google.com/?q=Royal+Bolton+Hospital+Minerva+Road+Farnworth+Bolton+BL4+0JR", source: "https://gp-training.hee.nhs.uk/bolton/about-us/hospital-placements/", verified: true}
+            ],
+            6: [ // Pennine Northwest - VERIFIED WITH OFFICIAL SOURCES
+                {name: "North Manchester General Hospital", address: "Delaunays Road, Crumpsall, Manchester, M8 5RB", maps: "https://maps.google.com/?q=North+Manchester+General+Hospital+Delaunays+Road+Crumpsall+M8+5RB", source: "https://gp-training.hee.nhs.uk/pennine-north-west/about-us/our-hospital-posts/", verified: true},
+                {name: "Royal Oldham Hospital", address: "Rochdale Road, Oldham, OL1 2JH", maps: "https://maps.google.com/?q=Royal+Oldham+Hospital+Rochdale+Road+Oldham+OL1+2JH", source: "https://gp-training.hee.nhs.uk/pennine-north-west/about-us/our-hospital-posts/", verified: true},
+                {name: "Fairfield General Hospital", address: "Rochdale Old Road, Bury, BL9 7TD", maps: "https://maps.google.com/?q=Fairfield+General+Hospital+Rochdale+Old+Road+Bury+BL9+7TD", source: "https://gp-training.hee.nhs.uk/pennine-north-west/about-us/our-hospital-posts/", verified: true},
+                {name: "Rochdale Infirmary", address: "Whitehall Street, Rochdale, OL12 0NB", maps: "https://maps.google.com/?q=Rochdale+Infirmary+Whitehall+Street+Rochdale+OL12+0NB", source: "https://gp-training.hee.nhs.uk/pennine-north-west/about-us/our-hospital-posts/", verified: true},
+                {name: "Birch Hill Hospital", address: "Union Street, Rochdale, OL12 9QB", maps: "https://maps.google.com/?q=Birch+Hill+Hospital+Union+Street+Rochdale+OL12+9QB", source: "https://gp-training.hee.nhs.uk/pennine-north-west/about-us/our-hospital-posts/", verified: true}
+            ],
+            7: [ // Salford & Trafford - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Salford Royal Hospital", address: "Stott Lane, Salford, M6 8HD", maps: "https://maps.google.com/?q=Salford+Royal+Hospital+Stott+Lane+Salford+M6+8HD", source: "https://gp-training.hee.nhs.uk/salfandtraf/about-us/", verified: true},
+                {name: "Trafford General Hospital", address: "Moorside Road, Davyhulme, Manchester, M41 5SL", maps: "https://maps.google.com/?q=Trafford+General+Hospital+Moorside+Road+Davyhulme+M41+5SL", source: "https://gp-training.hee.nhs.uk/salfandtraf/about-us/", verified: true}
+            ],
+            8: [ // Central Manchester - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Manchester Royal Infirmary", address: "Oxford Road, Manchester, M13 9WL", maps: "https://maps.google.com/?q=Manchester+Royal+Infirmary+Oxford+Road+Manchester+M13+9WL", source: "https://gp-training.hee.nhs.uk/manchester/programmes/st1-2/", verified: true},
+                {name: "Wythenshawe Hospital", address: "Southmoor Road, Wythenshawe, Manchester, M23 9LT", maps: "https://maps.google.com/?q=Wythenshawe+Hospital+Southmoor+Road+Manchester+M23+9LT", source: "https://gp-training.hee.nhs.uk/manchester/like-to-train-here/what-is-the-training/", verified: true}
+            ],
+            9: [ // Lancaster - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Royal Lancaster Infirmary", address: "Ashton Road, Lancaster, LA1 4RP", maps: "https://maps.google.com/?q=Royal+Lancaster+Infirmary+Ashton+Road+Lancaster+LA1+4RP", source: "https://www.uhmb.nhs.uk/our-trust/medical-education", verified: true}
+            ],
+            10: [ // Stockport - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Stepping Hill Hospital", address: "Poplar Grove, Stockport, SK2 7JE", maps: "https://maps.google.com/?q=Stepping+Hill+Hospital+Poplar+Grove+Stockport+SK2+7JE", source: "https://www.nwpgmd.nhs.uk/content/programme-stockport", verified: true}
+            ],
+            11: [ // South Cumbria - VERIFIED WITH OFFICIAL SOURCES - Updated
+                {name: "Furness General Hospital", address: "Dalton Lane, Barrow-in-Furness, LA14 4LF", maps: "https://maps.google.com/?q=Furness+General+Hospital+Dalton+Lane+Barrow-in-Furness+LA14+4LF", source: "https://www.uhmb.nhs.uk/our-trust/medical-education", verified: true},
+                {name: "Westmorland General Hospital", address: "Burton Road, Kendal, LA9 7RG", maps: "https://maps.google.com/?q=Westmorland+General+Hospital+Burton+Road+Kendal+LA9+7RG", source: "https://www.uhmb.nhs.uk/our-trust/medical-education", verified: true}
+            ],
+            12: [ // Tameside - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Tameside General Hospital", address: "Fountain Street, Ashton-under-Lyne, OL6 9RW", maps: "https://maps.google.com/?q=Tameside+General+Hospital+Fountain+Street+Ashton-under-Lyne+OL6+9RW", source: "https://www.nwpgmd.nhs.uk/content/programme-tameside", verified: true}
+            ],
+            15: [ // Greater Manchester Deprivation - UNVERIFIED (no official source found despite searches)
+                {name: "Manchester Royal Infirmary", address: "Oxford Road, Manchester, M13 9WL", maps: "https://maps.google.com/?q=Manchester+Royal+Infirmary+Oxford+Road+Manchester+M13+9WL", note: "Research found: GM Deprivation GPST Programme exists but no official source found specifying hospital rotations. General Manchester GPST uses MRI + Wythenshawe + North Manchester + Christie."},
+                {name: "North Manchester General Hospital", address: "Delaunays Road, Crumpsall, Manchester, M8 5RB", maps: "https://maps.google.com/?q=North+Manchester+General+Hospital+Delaunays+Road+Crumpsall+M8+5RB", note: "Part of Manchester University NHS Foundation Trust. Used in general Manchester GPST but no specific official confirmation for GM Deprivation scheme."}
+            ],
+            17: [ // Wigan - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Royal Albert Edward Infirmary", address: "Wigan Lane, Wigan, WN1 2NN", maps: "https://maps.google.com/?q=Royal+Albert+Edward+Infirmary+Wigan+Lane+Wigan+WN1+2NN", source: "https://www.nwpgmd.nhs.uk/content/programme-wigan", verified: true},
+                {name: "Wrightington Hospital", address: "Hall Lane, Appley Bridge, Wigan, WN6 9EP", maps: "https://maps.google.com/?q=Wrightington+Hospital+Hall+Lane+Appley+Bridge+WN6+9EP", source: "https://www.nwpgmd.nhs.uk/content/programme-wigan", verified: true}
+            ],
+            34: [ // Doncaster & Bassetlaw
+                {name: "Doncaster Royal Infirmary", address: "Armthorpe Road, Doncaster, DN2 5LT", maps: "https://maps.google.com/?q=Doncaster+Royal+Infirmary+Armthorpe+Road+DN2+5LT"},
+                {name: "Bassetlaw Hospital", address: "Kilton Hill, Worksop, S81 0BD", maps: "https://maps.google.com/?q=Bassetlaw+Hospital+Kilton+Hill+Worksop+S81+0BD"}
+            ],
+            35: [ // Harrogate
+                {name: "Harrogate District Hospital", address: "Lancaster Park Road, Harrogate, HG2 7SX", maps: "https://maps.google.com/?q=Harrogate+District+Hospital+Lancaster+Park+Road+HG2+7SX"}
+            ],
+            36: [ // Heart of Yorkshire
+                {name: "Pinderfields Hospital", address: "Aberford Road, Wakefield, WF1 4DG", maps: "https://maps.google.com/?q=Pinderfields+Hospital+Aberford+Road+Wakefield+WF1+4DG"},
+                {name: "Dewsbury District Hospital", address: "Halifax Road, Dewsbury, WF13 4HS", maps: "https://maps.google.com/?q=Dewsbury+District+Hospital+Halifax+Road+WF13+4HS"}
+            ],
+            37: [ // Northallerton
+                {name: "Friarage Hospital", address: "Bullamoor Road, Northallerton, DL6 1JG", maps: "https://maps.google.com/?q=Friarage+Hospital+Bullamoor+Road+Northallerton+DL6+1JG"}
+            ],
+            38: [ // Northern Lincolnshire
+                {name: "Diana Princess of Wales Hospital", address: "Scartho Road, Grimsby, DN33 2BA", maps: "https://maps.google.com/?q=Diana+Princess+of+Wales+Hospital+Scartho+Road+Grimsby+DN33+2BA"},
+                {name: "Scunthorpe General Hospital", address: "Cliff Gardens, Scunthorpe, DN15 7BH", maps: "https://maps.google.com/?q=Scunthorpe+General+Hospital+Cliff+Gardens+DN15+7BH"}
+            ],
+            40: [ // Rotherham
+                {name: "Rotherham Hospital", address: "Moorgate Road, Rotherham, S60 2UD", maps: "https://maps.google.com/?q=Rotherham+Hospital+Moorgate+Road+S60+2UD"}
+            ],
+            41: [ // Thames Valley Oxford - Buckinghamshire
+                {name: "Stoke Mandeville Hospital", address: "Mandeville Road, Aylesbury, HP21 8AL", maps: "https://maps.google.com/?q=Stoke+Mandeville+Hospital+Mandeville+Road+Aylesbury+HP21+8AL"},
+                {name: "Wycombe Hospital", address: "Queen Alexandra Road, High Wycombe, HP11 2TT", maps: "https://maps.google.com/?q=Wycombe+Hospital+Queen+Alexandra+Road+High+Wycombe+HP11+2TT"}
+            ],
+            42: [ // Wirral
+                {name: "Arrowe Park Hospital", address: "Arrowe Park Road, Birkenhead, CH49 5PE", maps: "https://maps.google.com/?q=Arrowe+Park+Hospital+Arrowe+Park+Road+Birkenhead+CH49+5PE"},
+                {name: "Clatterbridge Hospital", address: "Clatterbridge Road, Bebington, CH63 4JY", maps: "https://maps.google.com/?q=Clatterbridge+Hospital+Clatterbridge+Road+Bebington+CH63+4JY"}
+            ],
+            18: [ // Northumbria GP Programme (Scheme 103) - VERIFIED WITH OFFICIAL SOURCES
+                // Deep research identified: Scheme 103 = Northumbria GP Programme covering Northumberland & Newcastle/Gateshead area
+                {name: "Royal Victoria Infirmary", address: "Queen Victoria Road, Newcastle upon Tyne, NE1 4LP", maps: "https://maps.google.com/?q=Royal+Victoria+Infirmary+Queen+Victoria+Road+Newcastle+NE1+4LP", source: "https://madeinheene.hee.nhs.uk/general_practice/ngptp/Training-posts/Posts/Hospital-posts", verified: true},
+                {name: "Newcastle Freeman Hospital", address: "Freeman Road, Newcastle upon Tyne, NE7 7DN", maps: "https://maps.google.com/?q=Freeman+Hospital+Freeman+Road+Newcastle+NE7+7DN", source: "https://madeinheene.hee.nhs.uk/general_practice/ngptp/Training-posts/Posts/Hospital-posts", verified: true},
+                {name: "Queen Elizabeth Hospital", address: "Queen Elizabeth Avenue, Gateshead, NE9 6SX", maps: "https://maps.google.com/?q=Queen+Elizabeth+Hospital+Gateshead+NE9+6SX", source: "https://madeinheene.hee.nhs.uk/general_practice/ngptp/Training-posts/Posts/Hospital-posts", verified: true},
+                {name: "Northumbria Specialist Emergency Care Hospital (SECH)", address: "Northumbria Way, Cramlington, NE23 6NZ", maps: "https://maps.google.com/?q=Northumbria+Specialist+Emergency+Care+Hospital+Cramlington+NE23+6NZ", source: "https://madeinheene.hee.nhs.uk/general_practice/ngptp/Training-posts/Posts/Hospital-posts", verified: true}
+            ],
+            19: [ // Durham & Tees Valley GP Programme (Scheme 101) - VERIFIED WITH OFFICIAL SOURCES
+                // Deep research identified: Scheme 101 = Durham & Tees Valley GP Programme covering County Durham, Darlington and Teesside
+                {name: "Darlington Memorial Hospital", address: "Hollyhurst Road, Darlington, DL3 6HX", maps: "https://maps.google.com/?q=Darlington+Memorial+Hospital+Hollyhurst+Road+Darlington+DL3+6HX", source: "https://madeinheene.hee.nhs.uk/dtvgptraining/Training-Posts/Hospital-Posts", verified: true},
+                {name: "Bishop Auckland Hospital", address: "Cockton Hill Road, Bishop Auckland, DL14 6AD", maps: "https://maps.google.com/?q=Bishop+Auckland+Hospital+Cockton+Hill+Road+Bishop+Auckland+DL14+6AD", source: "https://madeinheene.hee.nhs.uk/dtvgptraining/Training-Posts/Hospital-Posts", verified: true},
+                {name: "University Hospital of North Durham", address: "North Road, Durham, DH1 5TW", maps: "https://maps.google.com/?q=University+Hospital+North+Durham+North+Road+Durham+DH1+5TW", source: "https://madeinheene.hee.nhs.uk/dtvgptraining/Training-Posts/Hospital-Posts", verified: true},
+                {name: "University Hospital of North Tees", address: "Hardwick Road, Stockton-on-Tees, TS19 8PE", maps: "https://maps.google.com/?q=University+Hospital+North+Tees+Hardwick+Road+Stockton+TS19+8PE", source: "https://madeinheene.hee.nhs.uk/dtvgptraining/Training-Posts/Hospital-Posts", verified: true},
+                {name: "James Cook University Hospital", address: "Marton Road, Middlesbrough, TS4 3BW", maps: "https://maps.google.com/?q=James+Cook+University+Hospital+Marton+Road+Middlesbrough+TS4+3BW", source: "https://madeinheene.hee.nhs.uk/dtvgptraining/Training-Posts/Hospital-Posts", verified: true},
+                {name: "Sunderland Royal Hospital", address: "Kayll Road, Sunderland, SR4 7TP", maps: "https://maps.google.com/?q=Sunderland+Royal+Hospital+Kayll+Road+Sunderland+SR4+7TP", source: "https://madeinheene.hee.nhs.uk/dtvgptraining/Training-Posts/Hospital-Posts", verified: true}
+            ],
+            20: [ // North Cumbria GP Programme (Scheme 102) - VERIFIED WITH OFFICIAL SOURCES
+                // Deep research identified: Scheme 102 = North Cumbria GP Programme covering all of Cumbria
+                {name: "Cumberland Infirmary", address: "Newtown Road, Carlisle, CA2 7HY", maps: "https://maps.google.com/?q=Cumberland+Infirmary+Newtown+Road+Carlisle+CA2+7HY", source: "https://madeinheene.hee.nhs.uk/north-cumbria-gp/Training-posts/Hospital-Posts", verified: true},
+                {name: "West Cumberland Hospital", address: "Hensingham, Whitehaven, CA28 8JG", maps: "https://maps.google.com/?q=West+Cumberland+Hospital+Hensingham+Whitehaven+CA28+8JG", source: "https://madeinheene.hee.nhs.uk/north-cumbria-gp/Training-posts/Hospital-Posts", verified: true}
+            ],
+            13: [ // Blackpool - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Blackpool Victoria Hospital", address: "Whinney Heys Road, Blackpool, FY3 8NR", maps: "https://maps.google.com/?q=Blackpool+Victoria+Hospital+Whinney+Heys+Road+Blackpool+FY3+8NR", source: "https://www.nwpgmd.nhs.uk/content/programme-blackpool", verified: true}
+            ],
+            14: [ // East Lancashire (Blackburn/Burnley) - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Royal Blackburn Teaching Hospital", address: "Haslingden Road, Blackburn, BB2 3HH", maps: "https://maps.google.com/?q=Royal+Blackburn+Teaching+Hospital+Haslingden+Road+Blackburn+BB2+3HH", source: "https://www.nwpgmd.nhs.uk/content/programme-east-lancashire", verified: true},
+                {name: "Burnley General Teaching Hospital", address: "Casterton Avenue, Burnley, BB10 2PQ", maps: "https://maps.google.com/?q=Burnley+General+Teaching+Hospital+Casterton+Avenue+Burnley+BB10+2PQ", source: "https://www.nwpgmd.nhs.uk/content/programme-east-lancashire", verified: true}
+            ],
+            16: [ // Preston, Chorley & District - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Royal Preston Hospital", address: "Sharoe Green Lane, Preston, PR2 9HT", maps: "https://maps.google.com/?q=Royal+Preston+Hospital+Sharoe+Green+Lane+Preston+PR2+9HT", source: "https://www.nwpgmd.nhs.uk/content/programme-prestonchorley", verified: true},
+                {name: "Chorley and South Ribble Hospital", address: "Preston Road, Chorley, PR7 1PP", maps: "https://maps.google.com/?q=Chorley+South+Ribble+Hospital+Preston+Road+Chorley+PR7+1PP", source: "https://www.nwpgmd.nhs.uk/content/programme-prestonchorley", verified: true}
+            ],
+            21: [ // Bradford - UNVERIFIED (no specific GP training hospital list found)
+                {name: "Bradford Royal Infirmary", address: "Duckworth Lane, Bradford, BD9 6RJ", maps: "https://maps.google.com/?q=Bradford+Royal+Infirmary+Duckworth+Lane+Bradford+BD9+6RJ", note: "Research found: Bradford Teaching Hospitals hosts GP teaching at Field House Teaching Centre with TPDs managing hospital specialties. BRI confirmed as teaching hospital but specific GP rotation details not found in official sources."},
+                {name: "St Luke's Hospital", address: "Little Horton Lane, Bradford, BD5 0NA", maps: "https://maps.google.com/?q=St+Lukes+Hospital+Little+Horton+Lane+Bradford+BD5+0NA", note: "Research found: Part of Bradford Teaching Hospitals Trust, provides rehabilitation and elderly care services. GP training involvement not confirmed in official documentation."}
+            ],
+            22: [ // Crewe - UNVERIFIED (no official GP training source found)
+                {name: "Leighton Hospital", address: "Middlewich Road, Crewe, CW1 4QJ", maps: "https://maps.google.com/?q=Leighton+Hospital+Middlewich+Road+Crewe+CW1+4QJ", note: "Research found: Leighton Hospital is part of Mid Cheshire Hospitals NHS Foundation Trust and main hospital for Crewe. Foundation training confirmed but no specific GP training documentation found."}
+            ],
+            23: [ // Hull & East Riding - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Hull Royal Infirmary", address: "Anlaby Road, Hull, HU3 2JZ", maps: "https://maps.google.com/?q=Hull+Royal+Infirmary+Anlaby+Road+Hull+HU3+2JZ", source: "https://www.yorksandhumberdeanery.nhs.uk/general_practice/hull-and-east-riding-gp-training-haerts", verified: true},
+                {name: "Castle Hill Hospital", address: "Castle Road, Cottingham, Hull, HU16 5JQ", maps: "https://maps.google.com/?q=Castle+Hill+Hospital+Castle+Road+Cottingham+Hull+HU16+5JQ", source: "https://www.yorksandhumberdeanery.nhs.uk/general_practice/hull-and-east-riding-gp-training-haerts", verified: true}
+            ],
+            24: [ // York - UNVERIFIED (no specific hospital list found)
+                {name: "York Hospital", address: "Wigginton Road, York, YO31 8HE", maps: "https://maps.google.com/?q=York+Hospital+Wigginton+Road+York+YO31+8HE", note: "Research found: York and Scarborough Teaching Hospitals NHS Foundation Trust operates York GP Training Scheme. York Hospital confirmed as teaching hospital but specific GP rotation details not found in official documentation."},
+                {name: "Scarborough Hospital", address: "Woodlands Drive, Scarborough, YO12 6QL", maps: "https://maps.google.com/?q=Scarborough+Hospital+Woodlands+Drive+Scarborough+YO12+6QL", note: "Research found: Part of York and Scarborough Teaching Hospitals Trust. Has separate Scarborough GP Training Scheme but link to York scheme rotation not explicitly documented."}
+            ],
+            25: [ // Nottingham - UNVERIFIED (no explicit hospital list found)
+                {name: "Nottingham City Hospital", address: "Hucknall Road, Nottingham, NG5 1PB", maps: "https://maps.google.com/?q=Nottingham+City+Hospital+Hucknall+Road+Nottingham+NG5+1PB", note: "Research found: Part of Nottingham University Hospitals NHS Trust teaching hospitals. GP programme exists but specific rotation confirmation not found in official documentation."},
+                {name: "Queen's Medical Centre", address: "Derby Road, Nottingham, NG7 2UH", maps: "https://maps.google.com/?q=Queens+Medical+Centre+Derby+Road+Nottingham+NG7+2UH", note: "Research found: Major teaching hospital in Nottingham University Hospitals Trust. GP training confirmed in area but specific hospital rotations not explicitly documented."}
+            ],
+            26: [ // Birmingham/Solihull - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Queen Elizabeth Hospital Birmingham", address: "Mindelsohn Way, Birmingham, B15 2GW", maps: "https://maps.google.com/?q=Queen+Elizabeth+Hospital+Birmingham+Mindelsohn+Way+B15+2GW", source: "https://jobs.uhb.nhs.uk/education/clinical-education/medical-academy/doctors/programmes/general-practice-vocational-training-scheme-gpvts/", verified: true},
+                {name: "Heartlands Hospital", address: "Bordesley Green East, Birmingham, B9 5SS", maps: "https://maps.google.com/?q=Heartlands+Hospital+Bordesley+Green+East+Birmingham+B9+5SS", source: "https://jobs.uhb.nhs.uk/education/clinical-education/medical-academy/doctors/programmes/general-practice-vocational-training-scheme-gpvts/", verified: true},
+                {name: "Good Hope Hospital", address: "Rectory Road, Sutton Coldfield, B75 7RR", maps: "https://maps.google.com/?q=Good+Hope+Hospital+Rectory+Road+Sutton+Coldfield+B75+7RR", source: "https://jobs.uhb.nhs.uk/education/clinical-education/medical-academy/doctors/programmes/general-practice-vocational-training-scheme-gpvts/", verified: true},
+                {name: "Solihull Hospital", address: "Lode Lane, Solihull, B91 2JL", maps: "https://maps.google.com/?q=Solihull+Hospital+Lode+Lane+Solihull+B91+2JL", source: "https://jobs.uhb.nhs.uk/education/clinical-education/medical-academy/doctors/programmes/general-practice-vocational-training-scheme-gpvts/", verified: true}
+            ],
+            27: [ // Coventry & Warwickshire - UNVERIFIED (no specific hospital list found)
+                {name: "University Hospital Coventry", address: "Clifford Bridge Road, Walsgrave, Coventry, CV2 2DX", maps: "https://maps.google.com/?q=University+Hospital+Coventry+Clifford+Bridge+Road+Walsgrave+CV2+2DX", note: "Research found: UHCW Trust includes this hospital and is listed as training provider by West Midlands Deanery. GP VTS exists but specific rotation confirmation not found."},
+                {name: "Hospital of St Cross, Rugby", address: "Barby Road, Rugby, CV22 5PX", maps: "https://maps.google.com/?q=Hospital+of+St+Cross+Rugby+Barby+Road+CV22+5PX", note: "Research found: Part of UHCW Trust with 110 beds. Listed as training site but GP training rotations not explicitly confirmed in official documentation."}
+            ],
+            28: [ // Black Country - UNVERIFIED (no specific hospital list found)
+                {name: "New Cross Hospital", address: "Wolverhampton Road, Heath Town, Wolverhampton, WV10 0QP", maps: "https://maps.google.com/?q=New+Cross+Hospital+Wolverhampton+Road+Heath+Town+WV10+0QP", note: "Research found: Main site for Royal Wolverhampton NHS Trust. Trust listed as training provider but GP rotation specifics not documented."},
+                {name: "Russells Hall Hospital", address: "Pensnett Road, Dudley, DY1 2HQ", maps: "https://maps.google.com/?q=Russells+Hall+Hospital+Pensnett+Road+Dudley+DY1+2HQ", note: "Research found: Listed by West Midlands Deanery as training provider site. Has Postgraduate Education Centre but GP training rotations not explicitly confirmed."},
+                {name: "Walsall Manor Hospital", address: "Moat Road, Walsall, WS2 9PS", maps: "https://maps.google.com/?q=Walsall+Manor+Hospital+Moat+Road+Walsall+WS2+9PS", note: "Research found: Main hospital for Walsall Healthcare NHS Trust serving 260,000 people. GP training programme exists in Black Country but specific hospital involvement not confirmed."},
+                {name: "City Hospital", address: "Dudley Road, Birmingham, B18 7QH", maps: "https://maps.google.com/?q=City+Hospital+Dudley+Road+Birmingham+B18+7QH", note: "Research found: Part of Sandwell and West Birmingham NHS Trust. West Birmingham GP VTS exists but specific rotation details not found in official documentation."}
+            ],
+            29: [ // Cardiff Area - VERIFIED WITH OFFICIAL SOURCE
+                {name: "University Hospital of Wales", address: "Heath Park, Cardiff, CF14 4XW", maps: "https://maps.google.com/?q=University+Hospital+of+Wales+Heath+Park+Cardiff+CF14+4XW", source: "https://heiw.nhs.wales/education-and-training/recruitment/recruitment/gp-training-schemes/cardiff/", verified: true},
+                {name: "University Hospital Llandough", address: "Penlan Road, Penarth, CF64 2XX", maps: "https://maps.google.com/?q=University+Hospital+Llandough+Penlan+Road+Penarth+CF64+2XX", note: "Research found: Part of Cardiff and Vale UHB with teaching facilities. GP training confirmed for health board but Llandough involvement not explicitly documented at HEIW source."}
+            ],
+            30: [ // Swansea Area - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Morriston Hospital", address: "Heol Maes Eglwys, Morriston, Swansea, SA6 6NL", maps: "https://maps.google.com/?q=Morriston+Hospital+Heol+Maes+Eglwys+Swansea+SA6+6NL", source: "https://heiw.nhs.wales/education-and-training/recruitment/recruitment/gp-training-schemes/swansea-bay/", verified: true},
+                {name: "Singleton Hospital", address: "Sketty Lane, Sketty, Swansea, SA2 8QA", maps: "https://maps.google.com/?q=Singleton+Hospital+Sketty+Lane+Swansea+SA2+8QA", source: "https://heiw.nhs.wales/education-and-training/recruitment/recruitment/gp-training-schemes/swansea-bay/", verified: true}
+            ],
+            31: [ // Northern Scheme 104 (0 places so less critical)
+                {name: "Durham University Hospital", address: "North Road, Durham, DH1 5TW", maps: "https://maps.google.com/?q=Durham+University+Hospital+North+Road+Durham+DH1+5TW"},
+                {name: "Darlington Memorial Hospital", address: "Hollyhurst Road, Darlington, DL3 6HX", maps: "https://maps.google.com/?q=Darlington+Memorial+Hospital+Hollyhurst+Road+Darlington+DL3+6HX"}
+            ],
+            32: [ // Airedale
+                {name: "Airedale General Hospital", address: "Skipton Road, Steeton, Keighley, BD20 6TD", maps: "https://maps.google.com/?q=Airedale+General+Hospital+Skipton+Road+Steeton+Keighley+BD20+6TD"}
+            ],
+            33: [ // Barnsley
+                {name: "Barnsley Hospital", address: "Gawber Road, Barnsley, S75 2EP", maps: "https://maps.google.com/?q=Barnsley+Hospital+Gawber+Road+Barnsley+S75+2EP"}
+            ],
+            43: [ // Chester
+                {name: "Countess of Chester Hospital", address: "Liverpool Road, Chester, CH2 1UL", maps: "https://maps.google.com/?q=Countess+of+Chester+Hospital+Liverpool+Road+Chester+CH2+1UL"}
+            ],
+            44: [ // Macclesfield
+                {name: "Macclesfield District General Hospital", address: "Victoria Road, Macclesfield, SK10 3BL", maps: "https://maps.google.com/?q=Macclesfield+District+General+Hospital+Victoria+Road+Macclesfield+SK10+3BL"}
+            ],
+            45: [ // Southport & Ormskirk
+                {name: "Southport and Formby District General Hospital", address: "Town Lane, Kew, Southport, PR8 6PN", maps: "https://maps.google.com/?q=Southport+and+Formby+District+General+Hospital+Town+Lane+Southport+PR8+6PN"},
+                {name: "Ormskirk District General Hospital", address: "Wigan Road, Ormskirk, L39 2AZ", maps: "https://maps.google.com/?q=Ormskirk+District+General+Hospital+Wigan+Road+Ormskirk+L39+2AZ"}
+            ],
+            46: [ // St Helens and Knowsley
+                {name: "St Helens Hospital", address: "Marshalls Cross Road, St Helens, WA9 3DA", maps: "https://maps.google.com/?q=St+Helens+Hospital+Marshalls+Cross+Road+St+Helens+WA9+3DA"},
+                {name: "Whiston Hospital", address: "Warrington Road, Prescot, L35 5DR", maps: "https://maps.google.com/?q=Whiston+Hospital+Warrington+Road+Prescot+L35+5DR"}
+            ],
+            47: [ // Warrington and Halton
+                {name: "Warrington Hospital", address: "Lovely Lane, Warrington, WA5 1QG", maps: "https://maps.google.com/?q=Warrington+Hospital+Lovely+Lane+Warrington+WA5+1QG"},
+                {name: "Halton Hospital", address: "Hospital Way, Runcorn, WA7 2DA", maps: "https://maps.google.com/?q=Halton+Hospital+Hospital+Way+Runcorn+WA7+2DA"}
+            ],
+            48: [ // Boston
+                {name: "Pilgrim Hospital", address: "Sibsey Road, Boston, PE21 9QS", maps: "https://maps.google.com/?q=Pilgrim+Hospital+Sibsey+Road+Boston+PE21+9QS"}
+            ],
+            49: [ // Chesterfield
+                {name: "Chesterfield Royal Hospital", address: "Chesterfield Road, Calow, Chesterfield, S44 5BL", maps: "https://maps.google.com/?q=Chesterfield+Royal+Hospital+Chesterfield+Road+Calow+Chesterfield+S44+5BL"}
+            ],
+            50: [ // Bedford
+                {name: "Bedford Hospital", address: "Kempston Road, Bedford, MK42 9DJ", maps: "https://maps.google.com/?q=Bedford+Hospital+Kempston+Road+Bedford+MK42+9DJ"}
+            ],
+            51: [ // Derby
+                {name: "Royal Derby Hospital", address: "Uttoxeter Road, Derby, DE22 3NE", maps: "https://maps.google.com/?q=Royal+Derby+Hospital+Uttoxeter+Road+Derby+DE22+3NE"}
+            ],
+            52: [ // Kettering and Northampton
+                {name: "Kettering General Hospital", address: "Rothwell Road, Kettering, NN16 8UZ", maps: "https://maps.google.com/?q=Kettering+General+Hospital+Rothwell+Road+Kettering+NN16+8UZ"},
+                {name: "Northampton General Hospital", address: "Cliftonville, Northampton, NN1 5BD", maps: "https://maps.google.com/?q=Northampton+General+Hospital+Cliftonville+Northampton+NN1+5BD"}
+            ],
+            53: [ // Leicestershire
+                {name: "Leicester Royal Infirmary", address: "Infirmary Square, Leicester, LE1 5WW", maps: "https://maps.google.com/?q=Leicester+Royal+Infirmary+Infirmary+Square+Leicester+LE1+5WW"},
+                {name: "Leicester General Hospital", address: "Gwendolen Road, Leicester, LE5 4PW", maps: "https://maps.google.com/?q=Leicester+General+Hospital+Gwendolen+Road+Leicester+LE5+4PW"},
+                {name: "Glenfield Hospital", address: "Groby Road, Leicester, LE3 9QP", maps: "https://maps.google.com/?q=Glenfield+Hospital+Groby+Road+Leicester+LE3+9QP"}
+            ],
+            54: [ // Lincoln
+                {name: "Lincoln County Hospital", address: "Greetwell Road, Lincoln, LN2 5QY", maps: "https://maps.google.com/?q=Lincoln+County+Hospital+Greetwell+Road+Lincoln+LN2+5QY"}
+            ],
+            55: [ // Bury St. Edmunds
+                {name: "West Suffolk Hospital", address: "Hardwick Lane, Bury St Edmunds, IP33 2QZ", maps: "https://maps.google.com/?q=West+Suffolk+Hospital+Hardwick+Lane+Bury+St+Edmunds+IP33+2QZ"}
+            ],
+            56: [ // Cambridge
+                {name: "Addenbrooke's Hospital", address: "Hills Road, Cambridge, CB2 0QQ", maps: "https://maps.google.com/?q=Addenbrookes+Hospital+Hills+Road+Cambridge+CB2+0QQ"}
+            ],
+            57: [ // Great Yarmouth
+                {name: "James Paget University Hospital", address: "Lowestoft Road, Gorleston, Great Yarmouth, NR31 6LA", maps: "https://maps.google.com/?q=James+Paget+University+Hospital+Lowestoft+Road+Gorleston+Great+Yarmouth+NR31+6LA"}
+            ],
+            58: [ // Hemel Hempstead & Watford
+                {name: "Watford General Hospital", address: "Vicarage Road, Watford, WD18 0HB", maps: "https://maps.google.com/?q=Watford+General+Hospital+Vicarage+Road+Watford+WD18+0HB"},
+                {name: "Hemel Hempstead Hospital", address: "Hillfield Road, Hemel Hempstead, HP2 4AD", maps: "https://maps.google.com/?q=Hemel+Hempstead+Hospital+Hillfield+Road+Hemel+Hempstead+HP2+4AD"}
+            ],
+            59: [ // Ipswich
+                {name: "Ipswich Hospital", address: "Heath Road, Ipswich, IP4 5PD", maps: "https://maps.google.com/?q=Ipswich+Hospital+Heath+Road+Ipswich+IP4+5PD"}
+            ],
+            60: [ // Kings Lynn
+                {name: "Queen Elizabeth Hospital King's Lynn", address: "Gayton Road, King's Lynn, PE30 4ET", maps: "https://maps.google.com/?q=Queen+Elizabeth+Hospital+Kings+Lynn+Gayton+Road+Kings+Lynn+PE30+4ET"}
+            ],
+            61: [ // Luton
+                {name: "Luton and Dunstable University Hospital", address: "Lewsey Road, Luton, LU4 0DZ", maps: "https://maps.google.com/?q=Luton+and+Dunstable+University+Hospital+Lewsey+Road+Luton+LU4+0DZ"}
+            ],
+            62: [ // Norwich
+                {name: "Norfolk and Norwich University Hospital", address: "Colney Lane, Norwich, NR4 7UY", maps: "https://maps.google.com/?q=Norfolk+and+Norwich+University+Hospital+Colney+Lane+Norwich+NR4+7UY"}
+            ],
+            63: [ // Peterborough
+                {name: "Peterborough City Hospital", address: "Edith Cavell Campus, Bretton Gate, Peterborough, PE3 9GZ", maps: "https://maps.google.com/?q=Peterborough+City+Hospital+Edith+Cavell+Campus+Bretton+Gate+Peterborough+PE3+9GZ"}
+            ],
+            64: [ // Stevenage
+                {name: "Lister Hospital", address: "Coreys Mill Lane, Stevenage, SG1 4AB", maps: "https://maps.google.com/?q=Lister+Hospital+Coreys+Mill+Lane+Stevenage+SG1+4AB"}
+            ],
+            65: [ // Welwyn Garden City
+                {name: "Queen Elizabeth II Hospital", address: "Howlands, Welwyn Garden City, AL7 4HQ", maps: "https://maps.google.com/?q=Queen+Elizabeth+II+Hospital+Howlands+Welwyn+Garden+City+AL7+4HQ"}
+            ],
+            66: [ // West Cambridgeshire (Huntingdon)
+                {name: "Hinchingbrooke Hospital", address: "Hinchingbrooke Park, Huntingdon, PE29 6NT", maps: "https://maps.google.com/?q=Hinchingbrooke+Hospital+Hinchingbrooke+Park+Huntingdon+PE29+6NT"}
+            ],
+            67: [ // Bath
+                {name: "Royal United Hospital Bath", address: "Combe Park, Bath, BA1 3NG", maps: "https://maps.google.com/?q=Royal+United+Hospital+Bath+Combe+Park+Bath+BA1+3NG"}
+            ],
+            68: [ // Bristol
+                {name: "Bristol Royal Infirmary", address: "Upper Maudlin Street, Bristol, BS2 8HW", maps: "https://maps.google.com/?q=Bristol+Royal+Infirmary+Upper+Maudlin+Street+Bristol+BS2+8HW"},
+                {name: "Southmead Hospital", address: "Southmead Road, Bristol, BS10 5NB", maps: "https://maps.google.com/?q=Southmead+Hospital+Southmead+Road+Bristol+BS10+5NB"}
+            ],
+            69: [ // Cornwall
+                {name: "Royal Cornwall Hospital (Treliske)", address: "Truro, Cornwall, TR1 3LJ", maps: "https://maps.google.com/?q=Royal+Cornwall+Hospital+Treliske+Truro+Cornwall+TR1+3LJ"},
+                {name: "West Cornwall Hospital", address: "St Clare Street, Penzance, Cornwall, TR18 2PF", maps: "https://maps.google.com/?q=West+Cornwall+Hospital+St+Clare+Street+Penzance+Cornwall+TR18+2PF"}
+            ],
+            70: [ // Exeter
+                {name: "Royal Devon and Exeter Hospital", address: "Barrack Road, Exeter, EX2 5DW", maps: "https://maps.google.com/?q=Royal+Devon+and+Exeter+Hospital+Barrack+Road+Exeter+EX2+5DW"}
+            ],
+            71: [ // Sherwood Forest
+                {name: "King's Mill Hospital", address: "Mansfield Road, Sutton-in-Ashfield, NG17 4JL", maps: "https://maps.google.com/?q=Kings+Mill+Hospital+Mansfield+Road+Sutton-in-Ashfield+NG17+4JL"}
+            ],
+            72: [ // Gloucestershire
+                {name: "Gloucestershire Royal Hospital", address: "Great Western Road, Gloucester, GL1 3NN", maps: "https://maps.google.com/?q=Gloucestershire+Royal+Hospital+Great+Western+Road+Gloucester+GL1+3NN"},
+                {name: "Cheltenham General Hospital", address: "Sandford Road, Cheltenham, GL53 7AN", maps: "https://maps.google.com/?q=Cheltenham+General+Hospital+Sandford+Road+Cheltenham+GL53+7AN"}
+            ],
+            73: [ // North Devon
+                {name: "North Devon District Hospital", address: "Raleigh Park, Barnstaple, EX31 4JB", maps: "https://maps.google.com/?q=North+Devon+District+Hospital+Raleigh+Park+Barnstaple+EX31+4JB"}
+            ],
+            74: [ // Plymouth
+                {name: "Derriford Hospital", address: "Derriford Road, Crownhill, Plymouth, PL6 8DH", maps: "https://maps.google.com/?q=Derriford+Hospital+Derriford+Road+Plymouth+PL6+8DH"}
+            ],
+            75: [ // Somerset
+                {name: "Musgrove Park Hospital", address: "Parkfield Drive, Taunton, TA1 5DA", maps: "https://maps.google.com/?q=Musgrove+Park+Hospital+Parkfield+Drive+Taunton+TA1+5DA"},
+                {name: "Yeovil District Hospital", address: "Higher Kingston, Yeovil, BA21 4AT", maps: "https://maps.google.com/?q=Yeovil+District+Hospital+Higher+Kingston+Yeovil+BA21+4AT"}
+            ],
+            76: [ // Swindon
+                {name: "Great Western Hospital", address: "Marlborough Road, Swindon, SN3 6BB", maps: "https://maps.google.com/?q=Great+Western+Hospital+Marlborough+Road+Swindon+SN3+6BB"}
+            ],
+            77: [ // Torbay
+                {name: "Torbay Hospital", address: "Lowes Bridge, Torquay, TQ2 7AA", maps: "https://maps.google.com/?q=Torbay+Hospital+Lowes+Bridge+Torquay+TQ2+7AA"}
+            ],
+            78: [ // Severn
+                {name: "Bristol Royal Infirmary", address: "Upper Maudlin Street, Bristol, BS2 8HW", maps: "https://maps.google.com/?q=Bristol+Royal+Infirmary+Upper+Maudlin+Street+Bristol+BS2+8HW"},
+                {name: "Southmead Hospital", address: "Southmead Road, Bristol, BS10 5NB", maps: "https://maps.google.com/?q=Southmead+Hospital+Southmead+Road+Bristol+BS10+5NB"}
+            ],
+            79: [ // Peninsula
+                {name: "Royal Devon and Exeter Hospital", address: "Barrack Road, Exeter, EX2 5DW", maps: "https://maps.google.com/?q=Royal+Devon+and+Exeter+Hospital+Barrack+Road+Exeter+EX2+5DW"},
+                {name: "Derriford Hospital", address: "Derriford Road, Plymouth, PL6 8DH", maps: "https://maps.google.com/?q=Derriford+Hospital+Derriford+Road+Plymouth+PL6+8DH"}
+            ],
+            80: [ // Hereford
+                {name: "The County Hospital", address: "Union Walk, Hereford, HR1 2ER", maps: "https://maps.google.com/?q=County+Hospital+Union+Walk+Hereford+HR1+2ER"}
+            ],
+            81: [ // Worcester South
+                {name: "Worcestershire Royal Hospital", address: "Charles Hastings Way, Worcester, WR5 1DD", maps: "https://maps.google.com/?q=Worcestershire+Royal+Hospital+Charles+Hastings+Way+Worcester+WR5+1DD"},
+                {name: "Alexandra Hospital Redditch", address: "Woodrow Drive, Redditch, B98 7UB", maps: "https://maps.google.com/?q=Alexandra+Hospital+Redditch+Woodrow+Drive+Redditch+B98+7UB"}
+            ],
+            82: [ // Shropshire
+                {name: "Royal Shrewsbury Hospital", address: "Mytton Oak Road, Shrewsbury, SY3 8XQ", maps: "https://maps.google.com/?q=Royal+Shrewsbury+Hospital+Mytton+Oak+Road+Shrewsbury+SY3+8XQ"},
+                {name: "Princess Royal Hospital Telford", address: "Apley Castle, Telford, TF1 6TF", maps: "https://maps.google.com/?q=Princess+Royal+Hospital+Telford+Apley+Castle+Telford+TF1+6TF"}
+            ],
+            83: [ // Staffordshire East & South
+                {name: "Queen's Hospital Burton", address: "Belvedere Road, Burton-on-Trent, DE13 0RB", maps: "https://maps.google.com/?q=Queens+Hospital+Burton+Belvedere+Road+Burton-on-Trent+DE13+0RB"},
+                {name: "Samuel Johnson Community Hospital", address: "Trent Valley Road, Lichfield, WS13 6EF", maps: "https://maps.google.com/?q=Samuel+Johnson+Community+Hospital+Trent+Valley+Road+Lichfield+WS13+6EF"}
+            ],
+            84: [ // Staffordshire North
+                {name: "Royal Stoke University Hospital", address: "Newcastle Road, Stoke-on-Trent, ST4 6QG", maps: "https://maps.google.com/?q=Royal+Stoke+University+Hospital+Newcastle+Road+Stoke-on-Trent+ST4+6QG"}
+            ],
+            85: [ // Scarborough GP Scheme
+                {name: "Scarborough Hospital", address: "Woodlands Drive, Scarborough, YO12 6QL", maps: "https://maps.google.com/?q=Scarborough+Hospital+Woodlands+Drive+Scarborough+YO12+6QL"}
+            ],
+            86: [ // East Sussex (Eastbourne & Hastings)
+                {name: "Eastbourne District General Hospital", address: "Kings Drive, Eastbourne, BN21 2UD", maps: "https://maps.google.com/?q=Eastbourne+District+General+Hospital+Kings+Drive+Eastbourne+BN21+2UD"},
+                {name: "Conquest Hospital Hastings", address: "The Ridge, St Leonards-on-Sea, TN37 7RD", maps: "https://maps.google.com/?q=Conquest+Hospital+Hastings+The+Ridge+St+Leonards-on-Sea+TN37+7RD"}
+            ],
+            87: [ // Chertsey
+                {name: "St Peter's Hospital Chertsey", address: "Guildford Road, Chertsey, KT16 0PZ", maps: "https://maps.google.com/?q=St+Peters+Hospital+Chertsey+Guildford+Road+Chertsey+KT16+0PZ"}
+            ],
+            88: [ // East Surrey
+                {name: "East Surrey Hospital Redhill", address: "Canada Avenue, Redhill, RH1 5RH", maps: "https://maps.google.com/?q=East+Surrey+Hospital+Redhill+Canada+Avenue+Redhill+RH1+5RH"}
+            ],
+            89: [ // Dartford
+                {name: "Darent Valley Hospital Dartford", address: "Darenth Wood Road, Dartford, DA2 8DA", maps: "https://maps.google.com/?q=Darent+Valley+Hospital+Dartford+Darenth+Wood+Road+Dartford+DA2+8DA"}
+            ],
+            90: [ // East Kent (inc Ashford, Canterbury & Margate)
+                {name: "William Harvey Hospital Ashford", address: "Kennington Road, Ashford, TN24 0LZ", maps: "https://maps.google.com/?q=William+Harvey+Hospital+Ashford+Kennington+Road+Ashford+TN24+0LZ"},
+                {name: "Kent and Canterbury Hospital", address: "Ethelbert Road, Canterbury, CT1 3NG", maps: "https://maps.google.com/?q=Kent+and+Canterbury+Hospital+Ethelbert+Road+Canterbury+CT1+3NG"},
+                {name: "QEQM Hospital Margate", address: "St Peters Road, Margate, CT9 4AN", maps: "https://maps.google.com/?q=QEQM+Hospital+Margate+St+Peters+Road+Margate+CT9+4AN"}
+            ],
+            91: [ // Epsom
+                {name: "Epsom Hospital", address: "Dorking Road, Epsom, KT18 7EG", maps: "https://maps.google.com/?q=Epsom+Hospital+Dorking+Road+Epsom+KT18+7EG"},
+                {name: "St Helier Hospital", address: "Wrythe Lane, Carshalton, SM5 1AA", maps: "https://maps.google.com/?q=St+Helier+Hospital+Wrythe+Lane+Carshalton+SM5+1AA"}
+            ],
+            92: [ // Frimley
+                {name: "Frimley Park Hospital", address: "Portsmouth Road, Frimley, GU16 7UJ", maps: "https://maps.google.com/?q=Frimley+Park+Hospital+Portsmouth+Road+Frimley+GU16+7UJ"}
+            ],
+            93: [ // Guildford
+                {name: "Royal Surrey County Hospital", address: "Egerton Road, Guildford, GU2 7XX", maps: "https://maps.google.com/?q=Royal+Surrey+County+Hospital+Egerton+Road+Guildford+GU2+7XX"}
+            ],
+            94: [ // Maidstone & Tunbridge Wells
+                {name: "Maidstone Hospital", address: "Hermitage Lane, Maidstone, ME16 9QQ", maps: "https://maps.google.com/?q=Maidstone+Hospital+Hermitage+Lane+Maidstone+ME16+9QQ"},
+                {name: "Tunbridge Wells Hospital", address: "Tonbridge Road, Pembury, Tunbridge Wells, TN2 4QJ", maps: "https://maps.google.com/?q=Tunbridge+Wells+Hospital+Tonbridge+Road+Pembury+TN2+4QJ"}
+            ],
+            95: [ // Medway
+                {name: "Medway Maritime Hospital", address: "Windmill Road, Gillingham, ME7 5NY", maps: "https://maps.google.com/?q=Medway+Maritime+Hospital+Windmill+Road+Gillingham+ME7+5NY"}
+            ],
+            96: [ // Western Sussex Hospitals
+                {name: "St Richard's Hospital", address: "Spitalfield Lane, Chichester, PO19 6SE", maps: "https://maps.google.com/?q=St+Richards+Hospital+Spitalfield+Lane+Chichester+PO19+6SE"},
+                {name: "Worthing Hospital", address: "Lyndhurst Road, Worthing, BN11 2DH", maps: "https://maps.google.com/?q=Worthing+Hospital+Lyndhurst+Road+Worthing+BN11+2DH"}
+            ],
+            97: [ // Frimley Health Foundation Trust
+                {name: "Frimley Park Hospital", address: "Portsmouth Road, Frimley, GU16 7UJ", maps: "https://maps.google.com/?q=Frimley+Park+Hospital+Portsmouth+Road+Frimley+GU16+7UJ"},
+                {name: "Wexham Park Hospital", address: "Wexham Park, Slough, SL2 4HL", maps: "https://maps.google.com/?q=Wexham+Park+Hospital+Slough+SL2+4HL"}
+            ],
+            98: [ // Reading/Berkshire
+                {name: "Royal Berkshire Hospital", address: "London Road, Reading, RG1 5AN", maps: "https://maps.google.com/?q=Royal+Berkshire+Hospital+London+Road+Reading+RG1+5AN"}
+            ],
+            99: [ // Oxford
+                {name: "John Radcliffe Hospital", address: "Headley Way, Headington, Oxford, OX3 9DU", maps: "https://maps.google.com/?q=John+Radcliffe+Hospital+Headley+Way+Oxford+OX3+9DU"},
+                {name: "Churchill Hospital", address: "Old Road, Headington, Oxford, OX3 7LE", maps: "https://maps.google.com/?q=Churchill+Hospital+Oxford+Old+Road+Headington+OX3+7LE"}
+            ],
+            100: [ // Thames Valley
+                {name: "Milton Keynes University Hospital", address: "Standing Way, Eaglestone, Milton Keynes, MK6 5LD", maps: "https://maps.google.com/?q=Milton+Keynes+University+Hospital+Standing+Way+Milton+Keynes+MK6+5LD"}
+            ],
+            101: [ // Thames Valley (101)
+                {name: "Stoke Mandeville Hospital", address: "Mandeville Road, Aylesbury, HP21 8AL", maps: "https://maps.google.com/?q=Stoke+Mandeville+Hospital+Mandeville+Road+Aylesbury+HP21+8AL"},
+                {name: "Wycombe Hospital", address: "Queen Alexandra Road, High Wycombe, HP11 2TT", maps: "https://maps.google.com/?q=Wycombe+Hospital+Queen+Alexandra+Road+High+Wycombe+HP11+2TT"}
+            ],
+            102: [ // Basildon
+                {name: "Basildon University Hospital", address: "Nethermayne, Basildon, SS16 5NL", maps: "https://maps.google.com/?q=Basildon+University+Hospital+Nethermayne+Basildon+SS16+5NL"}
+            ],
+            103: [ // Chelmsford
+                {name: "Broomfield Hospital", address: "Court Road, Broomfield, Chelmsford, CM1 7ET", maps: "https://maps.google.com/?q=Broomfield+Hospital+Court+Road+Chelmsford+CM1+7ET"}
+            ],
+            104: [ // Colchester
+                {name: "Colchester General Hospital", address: "Turner Road, Colchester, CO4 5JL", maps: "https://maps.google.com/?q=Colchester+General+Hospital+Turner+Road+Colchester+CO4+5JL"}
+            ],
+            105: [ // Harlow
+                {name: "The Princess Alexandra Hospital", address: "Hamstel Road, Harlow, CM20 1QX", maps: "https://maps.google.com/?q=Princess+Alexandra+Hospital+Hamstel+Road+Harlow+CM20+1QX"}
+            ],
+            106: [ // Southend
+                {name: "Southend University Hospital", address: "Prittlewell Chase, Westcliff-on-Sea, SS0 0RY", maps: "https://maps.google.com/?q=Southend+University+Hospital+Prittlewell+Chase+Westcliff+SS0+0RY"}
+            ],
+            107: [ // North Hampshire
+                {name: "Basingstoke and North Hampshire Hospital", address: "Aldermaston Road, Basingstoke, RG24 9NA", maps: "https://maps.google.com/?q=Basingstoke+North+Hampshire+Hospital+Aldermaston+Road+RG24+9NA"}
+            ],
+            108: [ // Dorchester
+                {name: "Dorset County Hospital", address: "Williams Avenue, Dorchester, DT1 2JY", maps: "https://maps.google.com/?q=Dorset+County+Hospital+Williams+Avenue+Dorchester+DT1+2JY"}
+            ],
+            109: [ // West Dorset
+                {name: "Dorset County Hospital", address: "Williams Avenue, Dorchester, DT1 2JY", maps: "https://maps.google.com/?q=Dorset+County+Hospital+Williams+Avenue+Dorchester+DT1+2JY"}
+            ],
+            110: [ // East Dorset
+                {name: "Poole Hospital", address: "Longfleet Road, Poole, BH15 2JB", maps: "https://maps.google.com/?q=Poole+Hospital+Longfleet+Road+Poole+BH15+2JB"},
+                {name: "Royal Bournemouth Hospital", address: "Castle Lane East, Bournemouth, BH7 7DW", maps: "https://maps.google.com/?q=Royal+Bournemouth+Hospital+Castle+Lane+East+Bournemouth+BH7+7DW"}
+            ],
+            111: [ // Isle of Wight
+                {name: "St Mary's Hospital", address: "Parkhurst Road, Newport, Isle of Wight, PO30 5TG", maps: "https://maps.google.com/?q=St+Marys+Hospital+Parkhurst+Road+Newport+Isle+of+Wight+PO30+5TG"}
+            ],
+            112: [ // Portsmouth
+                {name: "Queen Alexandra Hospital", address: "Southwick Hill Road, Cosham, Portsmouth, PO6 3LY", maps: "https://maps.google.com/?q=Queen+Alexandra+Hospital+Southwick+Hill+Road+Portsmouth+PO6+3LY"}
+            ],
+            113: [ // Salisbury
+                {name: "Salisbury District Hospital", address: "Odstock Road, Salisbury, SP2 8BJ", maps: "https://maps.google.com/?q=Salisbury+District+Hospital+Odstock+Road+Salisbury+SP2+8BJ"}
+            ],
+            114: [ // Southampton and New Forest
+                {name: "Southampton General Hospital", address: "Tremona Road, Southampton, SO16 6YD", maps: "https://maps.google.com/?q=Southampton+General+Hospital+Tremona+Road+Southampton+SO16+6YD"},
+                {name: "Royal South Hampshire Hospital", address: "Brintons Terrace, Southampton, SO14 0YG", maps: "https://maps.google.com/?q=Royal+South+Hampshire+Hospital+Brintons+Terrace+Southampton+SO14+0YG"}
+            ],
+            115: [ // Southampton with Jersey
+                {name: "Jersey General Hospital", address: "The Parade, St Helier, Jersey, JE1 3QS", maps: "https://maps.google.com/?q=Jersey+General+Hospital+The+Parade+St+Helier+Jersey+JE1+3QS"},
+                {name: "Southampton General Hospital", address: "Tremona Road, Southampton, SO16 6YD", maps: "https://maps.google.com/?q=Southampton+General+Hospital+Tremona+Road+Southampton+SO16+6YD"}
+            ],
+            116: [ // Belfast Area Group
+                {name: "Royal Victoria Hospital", address: "274 Grosvenor Road, Belfast, BT12 6BA", maps: "https://maps.google.com/?q=Royal+Victoria+Hospital+274+Grosvenor+Road+Belfast+BT12+6BA"},
+                {name: "Belfast City Hospital", address: "51 Lisburn Road, Belfast, BT9 7AB", maps: "https://maps.google.com/?q=Belfast+City+Hospital+51+Lisburn+Road+Belfast+BT9+7AB"}
+            ],
+            117: [ // North Western Area Group
+                {name: "Altnagelvin Area Hospital", address: "Glenshane Road, Londonderry, BT47 6SB", maps: "https://maps.google.com/?q=Altnagelvin+Area+Hospital+Glenshane+Road+Londonderry+BT47+6SB"}
+            ],
+            118: [ // Northern Area Group (North Coast)
+                {name: "Causeway Hospital", address: "4 Newbridge Road, Coleraine, BT52 1HS", maps: "https://maps.google.com/?q=Causeway+Hospital+4+Newbridge+Road+Coleraine+BT52+1HS"}
+            ],
+            119: [ // Northern Area Group (South Antrim)
+                {name: "Antrim Area Hospital", address: "Bush Road, Antrim, BT41 2RL", maps: "https://maps.google.com/?q=Antrim+Area+Hospital+Bush+Road+Antrim+BT41+2RL"}
+            ],
+            120: [ // South Eastern Area Group
+                {name: "Ulster Hospital", address: "Upper Newtownards Road, Dundonald, BT16 1RH", maps: "https://maps.google.com/?q=Ulster+Hospital+Upper+Newtownards+Road+Dundonald+BT16+1RH"}
+            ],
+            121: [ // South Western Area Group
+                {name: "Craigavon Area Hospital", address: "68 Lurgan Road, Portadown, BT63 5QQ", maps: "https://maps.google.com/?q=Craigavon+Area+Hospital+68+Lurgan+Road+Portadown+BT63+5QQ"}
+            ],
+            122: [ // Southern Area Group
+                {name: "Daisy Hill Hospital", address: "5 Hospital Road, Newry, BT35 8DR", maps: "https://maps.google.com/?q=Daisy+Hill+Hospital+5+Hospital+Road+Newry+BT35+8DR"},
+                {name: "Craigavon Area Hospital", address: "68 Lurgan Road, Portadown, BT63 5QQ", maps: "https://maps.google.com/?q=Craigavon+Area+Hospital+68+Lurgan+Road+Portadown+BT63+5QQ"}
+            ],
+            123: [ // Bridgend Area
+                {name: "Princess of Wales Hospital", address: "Coity Road, Bridgend, CF31 1RQ", maps: "https://maps.google.com/?q=Princess+of+Wales+Hospital+Coity+Road+Bridgend+CF31+1RQ"}
+            ],
+            124: [ // Carmarthen Area
+                {name: "Glangwili General Hospital", address: "Dolgwili Road, Carmarthen, SA31 2AF", maps: "https://maps.google.com/?q=Glangwili+General+Hospital+Dolgwili+Road+Carmarthen+SA31+2AF"}
+            ],
+            125: [ // Gwent
+                {name: "Royal Gwent Hospital", address: "Cardiff Road, Newport, NP20 2UB", maps: "https://maps.google.com/?q=Royal+Gwent+Hospital+Cardiff+Road+Newport+NP20+2UB"}
+            ],
+            126: [ // Dyffryn Clwyd
+                {name: "Glan Clwyd Hospital", address: "Rhuddlan Road, Bodelwyddan, Rhyl, LL18 5UJ", maps: "https://maps.google.com/?q=Glan+Clwyd+Hospital+Rhuddlan+Road+Bodelwyddan+Rhyl+LL18+5UJ"}
+            ],
+            127: [ // Pembrokeshire
+                {name: "Withybush General Hospital", address: "Fishguard Road, Haverfordwest, SA61 2PZ", maps: "https://maps.google.com/?q=Withybush+General+Hospital+Fishguard+Road+Haverfordwest+SA61+2PZ"}
+            ],
+            128: [ // Wrexham Area
+                {name: "Wrexham Maelor Hospital", address: "Croesnewydd Road, Wrexham, LL13 7TD", maps: "https://maps.google.com/?q=Wrexham+Maelor+Hospital+Croesnewydd+Road+Wrexham+LL13+7TD"}
+            ],
+            129: [ // Glamorgan Valleys
+                {name: "Prince Charles Hospital", address: "Gurnos, Merthyr Tydfil, CF47 9DT", maps: "https://maps.google.com/?q=Prince+Charles+Hospital+Gurnos+Merthyr+Tydfil+CF47+9DT"},
+                {name: "Royal Glamorgan Hospital", address: "Ynysmaerdy, Llantrisant, CF72 8XR", maps: "https://maps.google.com/?q=Royal+Glamorgan+Hospital+Ynysmaerdy+Llantrisant+CF72+8XR"}
+            ],
+            130: [ // Aberystwyth Area
+                {name: "Bronglais General Hospital", address: "Caradog Road, Aberystwyth, SY23 1ER", maps: "https://maps.google.com/?q=Bronglais+General+Hospital+Caradog+Road+Aberystwyth+SY23+1ER"}
+            ],
+            131: [ // Bangor Area
+                {name: "Ysbyty Gwynedd", address: "Penrhosgarnedd, Bangor, LL57 2PW", maps: "https://maps.google.com/?q=Ysbyty+Gwynedd+Penrhosgarnedd+Bangor+LL57+2PW"}
+            ],
+            132: [ // Lanarkshire
+                {name: "University Hospital Wishaw", address: "50 Netherton Street, Wishaw, ML2 0DP", maps: "https://maps.google.com/?q=University+Hospital+Wishaw+50+Netherton+Street+Wishaw+ML2+0DP"},
+                {name: "University Hospital Hairmyres", address: "Eaglesham Road, East Kilbride, G75 8RG", maps: "https://maps.google.com/?q=University+Hospital+Hairmyres+Eaglesham+Road+East+Kilbride+G75+8RG"},
+                {name: "University Hospital Monklands", address: "Monkscourt Avenue, Airdrie, ML6 0JS", maps: "https://maps.google.com/?q=University+Hospital+Monklands+Monkscourt+Avenue+Airdrie+ML6+0JS"}
+            ],
+            133: [ // Glasgow South
+                {name: "Queen Elizabeth University Hospital", address: "1345 Govan Road, Glasgow, G51 4TF", maps: "https://maps.google.com/?q=Queen+Elizabeth+University+Hospital+1345+Govan+Road+Glasgow+G51+4TF"},
+                {name: "New Victoria Hospital", address: "55 Grange Road, Glasgow, G42 9LL", maps: "https://maps.google.com/?q=New+Victoria+Hospital+55+Grange+Road+Glasgow+G42+9LL"},
+                {name: "Leverndale Hospital", address: "510 Crookston Road, Glasgow, G53 7TU", maps: "https://maps.google.com/?q=Leverndale+Hospital+510+Crookston+Road+Glasgow+G53+7TU"}
+            ],
+            134: [ // Glasgow North West
+                {name: "Glasgow Royal Infirmary", address: "84 Castle Street, Glasgow, G4 0SF", maps: "https://maps.google.com/?q=Glasgow+Royal+Infirmary+84+Castle+Street+Glasgow+G4+0SF"},
+                {name: "New Stobhill Hospital", address: "133 Balornock Road, Glasgow, G21 3UW", maps: "https://maps.google.com/?q=New+Stobhill+Hospital+133+Balornock+Road+Glasgow+G21+3UW"},
+                {name: "Gartnavel General Hospital", address: "1053 Great Western Road, Glasgow, G12 0YN", maps: "https://maps.google.com/?q=Gartnavel+General+Hospital+1053+Great+Western+Road+Glasgow+G12+0YN"},
+                {name: "Royal Alexandra Hospital", address: "Corsebar Road, Paisley, PA2 9PN", maps: "https://maps.google.com/?q=Royal+Alexandra+Hospital+Corsebar+Road+Paisley+PA2+9PN"}
+            ],
+            135: [ // Glasgow North East
+                {name: "Queen Elizabeth University Hospital", address: "1345 Govan Road, Glasgow, G51 4TF", maps: "https://maps.google.com/?q=Queen+Elizabeth+University+Hospital+1345+Govan+Road+Glasgow+G51+4TF"},
+                {name: "Glasgow Royal Infirmary", address: "84 Castle Street, Glasgow, G4 0SF", maps: "https://maps.google.com/?q=Glasgow+Royal+Infirmary+84+Castle+Street+Glasgow+G4+0SF"},
+                {name: "Lightburn Hospital", address: "966 Carntyne Road, Glasgow, G32 6NB", maps: "https://maps.google.com/?q=Lightburn+Hospital+966+Carntyne+Road+Glasgow+G32+6NB"},
+                {name: "University Hospital Monklands", address: "Monkscourt Avenue, Airdrie, ML6 0JS", maps: "https://maps.google.com/?q=University+Hospital+Monklands+Monkscourt+Avenue+Airdrie+ML6+0JS"}
+            ],
+            136: [ // Glasgow Clyde
+                {name: "Royal Alexandra Hospital", address: "Corsebar Road, Paisley, PA2 9PN", maps: "https://maps.google.com/?q=Royal+Alexandra+Hospital+Corsebar+Road+Paisley+PA2+9PN"},
+                {name: "Inverclyde Royal Hospital", address: "Larkfield Road, Greenock, PA16 0XN", maps: "https://maps.google.com/?q=Inverclyde+Royal+Hospital+Larkfield+Road+Greenock+PA16+0XN"},
+                {name: "Vale of Leven Hospital", address: "Main Street, Alexandria, G83 0UA", maps: "https://maps.google.com/?q=Vale+of+Leven+Hospital+Main+Street+Alexandria+G83+0UA"},
+                {name: "Queen Elizabeth University Hospital", address: "1345 Govan Road, Glasgow, G51 4TF", maps: "https://maps.google.com/?q=Queen+Elizabeth+University+Hospital+1345+Govan+Road+Glasgow+G51+4TF"}
+            ],
+            137: [ // Forth Valley
+                {name: "Forth Valley Royal Hospital", address: "Stirling Road, Larbert, FK5 4WR", maps: "https://maps.google.com/?q=Forth+Valley+Royal+Hospital+Stirling+Road+Larbert+FK5+4WR"},
+                {name: "Stirling Health and Care Village", address: "Livilands Gate, Stirling, FK8 2AU", maps: "https://maps.google.com/?q=Stirling+Health+and+Care+Village+Livilands+Gate+Stirling+FK8+2AU"},
+                {name: "Falkirk Community Hospital", address: "Westburn Avenue, Falkirk, FK1 5QE", maps: "https://maps.google.com/?q=Falkirk+Community+Hospital+Westburn+Avenue+Falkirk+FK1+5QE"}
+            ],
+            138: [ // Dumfries & Galloway
+                {name: "Dumfries and Galloway Royal Infirmary", address: "Cargenbridge, Dumfries, DG2 8RX", maps: "https://maps.google.com/?q=Dumfries+and+Galloway+Royal+Infirmary+Cargenbridge+Dumfries+DG2+8RX"},
+                {name: "Galloway Community Hospital", address: "Victoria Place, Stranraer, DG9 7HX", maps: "https://maps.google.com/?q=Galloway+Community+Hospital+Victoria+Place+Stranraer+DG9+7HX"},
+                {name: "Castle Douglas Hospital", address: "Academy Street, Castle Douglas, DG7 1EE", maps: "https://maps.google.com/?q=Castle+Douglas+Hospital+Academy+Street+Castle+Douglas+DG7+1EE"}
+            ],
+            139: [ // Ayrshire & Arran
+                {name: "University Hospital Ayr", address: "Dalmellington Road, Ayr, KA6 6DX", maps: "https://maps.google.com/?q=University+Hospital+Ayr+Dalmellington+Road+Ayr+KA6+6DX"},
+                {name: "University Hospital Crosshouse", address: "Kilmarnock Road, Crosshouse, Kilmarnock, KA2 0BE", maps: "https://maps.google.com/?q=University+Hospital+Crosshouse+Kilmarnock+Road+Crosshouse+Kilmarnock+KA2+0BE"},
+                {name: "Arran War Memorial Hospital", address: "Lamlash, Isle of Arran, KA27 8LF", maps: "https://maps.google.com/?q=Arran+War+Memorial+Hospital+Lamlash+Isle+of+Arran+KA27+8LF"},
+                {name: "Woodland View Hospital", address: "Benslie Road, Irvine, KA12 8JP", maps: "https://maps.google.com/?q=Woodland+View+Hospital+Benslie+Road+Irvine+KA12+8JP"}
+            ]
+        };
+
+        // Initialize data with manual entry fields
+        schemes.forEach((scheme, index) => {
+            scheme.id = scheme.rank;
+            scheme.safetyIndex = null;
+            scheme.monthlySavings = null;
+            scheme.airportDistance = null;
+            scheme.hasDirectEgypt = false;
+            scheme.cityPopulation = null;
+            scheme.transportScore = null;
+            scheme.imgCommunity = 'unknown';
+            scheme.score = 0;
+            scheme.notes = '';
+            scheme.hospitals = hospitalLocations[scheme.rank] || [];
+        });
+
+        let currentData = [...schemes];
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            // Sort by rank before rendering
+            currentData.sort((a, b) => {
+                return a.rank - b.rank;
+            });
+
+            currentData.forEach(scheme => {
+                const row = document.createElement('tr');
+                const placesClass = scheme.places > 0 ? 'places-badge' : 'places-badge no-places';
+                const scoreClass = scheme.score >= 70 ? 'high-score' : scheme.score >= 40 ? 'medium-score' : 'low-score';
+
+                // Build hospital links HTML
+                let hospitalsHTML = '';
+                if (scheme.hospitals && scheme.hospitals.length > 0) {
+                    hospitalsHTML = scheme.hospitals.map(h => {
+                        const verifiedIcon = h.verified ? '✅' : '⚠️';
+                        const verifiedText = h.verified ? 'VERIFIED' : 'UNVERIFIED';
+                        const sourceLink = h.source ? `<a href="${h.source}" target="_blank" style="color: #28a745; font-size: 0.7em; text-decoration: none;">📄 Official Source</a>` : '';
+                        const noteIcon = h.note ? `<span title="${h.note}" style="color: #666; font-size: 0.7em; cursor: help;">ℹ️ Research Notes</span>` : '';
+
+                        return `<div style="margin-bottom: 8px; padding: 6px; border-left: 3px solid ${h.verified ? '#28a745' : '#ffc107'}; background: ${h.verified ? '#f8fff9' : '#fffbf0'};">
+                            <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 2px;">
+                                <span style="font-size: 0.7em;">${verifiedIcon} ${verifiedText}</span>
+                                ${sourceLink}
+                                ${noteIcon}
+                            </div>
+                            <a href="${h.maps}" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 500;">
+                                📍 ${h.name}
+                            </a>
+                            <div style="font-size: 0.8em; color: #666; margin-top: 2px;">${h.address}</div>
+                        </div>`;
+                    }).join('');
+                } else {
+                    hospitalsHTML = `<button onclick="searchHospitals(${scheme.rank})" style="padding: 4px 8px; font-size: 12px;">🔍 Search</button>`;
+                }
+
+                row.innerHTML = `
+                    <td><span class="rank-badge">${scheme.rank}</span></td>
+                    <td>
+                        <div class="scheme-name">${scheme.scheme || 'Unknown Scheme'}</div>
+                        <div class="location-full">${scheme.region} ${scheme.area ? '• ' + scheme.area : ''}</div>
+                    </td>
+                    <td><span class="${placesClass}">${scheme.places}</span></td>
+                    <td style="min-width: 250px;">${hospitalsHTML}</td>
+                    <td><input type="number" value="${scheme.safetyIndex || ''}" onchange="updateField(${scheme.id}, 'safetyIndex', this.value)" placeholder="--"></td>
+                    <td><input type="number" value="${scheme.monthlySavings || ''}" onchange="updateField(${scheme.id}, 'monthlySavings', this.value)" placeholder="--"></td>
+                    <td><input type="number" value="${scheme.airportDistance || ''}" onchange="updateField(${scheme.id}, 'airportDistance', this.value)" placeholder="--"></td>
+                    <td><input type="checkbox" ${scheme.hasDirectEgypt ? 'checked' : ''} onchange="updateField(${scheme.id}, 'hasDirectEgypt', this.checked)"></td>
+                    <td><input type="number" value="${scheme.cityPopulation || ''}" onchange="updateField(${scheme.id}, 'cityPopulation', this.value)" placeholder="--"></td>
+                    <td><input type="number" min="1" max="10" value="${scheme.transportScore || ''}" onchange="updateField(${scheme.id}, 'transportScore', this.value)" placeholder="--"></td>
+                    <td>
+                        <select onchange="updateField(${scheme.id}, 'imgCommunity', this.value)">
+                            <option value="unknown" ${scheme.imgCommunity === 'unknown' ? 'selected' : ''}>Unknown</option>
+                            <option value="yes" ${scheme.imgCommunity === 'yes' ? 'selected' : ''}>Yes</option>
+                            <option value="no" ${scheme.imgCommunity === 'no' ? 'selected' : ''}>No</option>
+                        </select>
+                    </td>
+                    <td><span class="score ${scoreClass}">${scheme.score.toFixed(1)}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            updateStats();
+        }
+
+        function updateField(id, field, value) {
+            const scheme = schemes.find(s => s.id === id);
+            if (field === 'hasDirectEgypt') {
+                scheme[field] = value;
+            } else if (field === 'imgCommunity') {
+                scheme[field] = value;
+            } else {
+                scheme[field] = value ? parseFloat(value) : null;
+            }
+            saveData();
+        }
+
+        function calculateScores() {
+            schemes.forEach(scheme => {
+                let score = 0;
+                let maxScore = 0;
+
+                // Places available (20% weight)
+                if (scheme.places > 0) {
+                    score += Math.min(scheme.places / 10, 1) * 20;
+                }
+                maxScore += 20;
+
+                // Safety Index (25% weight) - ideal around 50
+                if (scheme.safetyIndex !== null) {
+                    const safetyDiff = Math.abs(scheme.safetyIndex - 50);
+                    const safetyscore = Math.max(0, 25 - (safetyDiff / 2));
+                    score += safetyscore;
+                    maxScore += 25;
+                }
+
+                // Monthly Savings (20% weight)
+                if (scheme.monthlySavings !== null) {
+                    const savingScore = Math.min(scheme.monthlySavings / 1000, 1) * 20;
+                    score += savingScore;
+                    maxScore += 20;
+                }
+
+                // Airport Distance (10% weight)
+                if (scheme.airportDistance !== null) {
+                    const airportScore = Math.max(0, 10 - (scheme.airportDistance / 10));
+                    score += airportScore;
+                    maxScore += 10;
+                }
+
+                // Direct Egypt Flights (5% weight)
+                if (scheme.hasDirectEgypt) {
+                    score += 5;
+                }
+                maxScore += 5;
+
+                // City Population (10% weight)
+                if (scheme.cityPopulation !== null) {
+                    const popScore = Math.min(scheme.cityPopulation / 500, 1) * 10;
+                    score += popScore;
+                    maxScore += 10;
+                }
+
+                // Transport Score (10% weight)
+                if (scheme.transportScore !== null) {
+                    score += (scheme.transportScore / 10) * 10;
+                    maxScore += 10;
+                }
+
+                // IMG Community (bonus 5%)
+                if (scheme.imgCommunity === 'yes') {
+                    score += 5;
+                }
+
+                // Normalize to 100
+                scheme.score = maxScore > 0 ? (score / maxScore) * 100 : 0;
+            });
+
+            currentData = [...schemes];
+            filterTable();
+        }
+
+        function sortByScore() {
+            currentData.sort((a, b) => {
+                // First sort by score
+                if (b.score !== a.score) return b.score - a.score;
+                // Then by places available
+                return b.places - a.places;
+            });
+            renderTable();
+        }
+
+        function filterTable() {
+            const searchText = document.getElementById('searchBox').value.toLowerCase();
+            const hideNoPlaces = document.getElementById('hideNoPlaces').checked;
+            const onlyGoodSafety = document.getElementById('onlyGoodSafety').checked;
+            const minSavings = document.getElementById('minSavings').checked;
+
+            currentData = schemes.filter(scheme => {
+                // Search filter
+                const searchMatch = !searchText ||
+                    scheme.scheme?.toLowerCase().includes(searchText) ||
+                    scheme.region?.toLowerCase().includes(searchText) ||
+                    scheme.area?.toLowerCase().includes(searchText);
+
+                // Places filter
+                const placesMatch = !hideNoPlaces || scheme.places > 0;
+
+                // Safety filter
+                const safetyMatch = !onlyGoodSafety ||
+                    (scheme.safetyIndex !== null && scheme.safetyIndex >= 40 && scheme.safetyIndex <= 70);
+
+                // Savings filter
+                const savingsMatch = !minSavings ||
+                    (scheme.monthlySavings !== null && scheme.monthlySavings >= 500);
+
+                return searchMatch && placesMatch && safetyMatch && savingsMatch;
+            });
+
+            renderTable();
+        }
+
+        function updateStats() {
+            document.getElementById('totalSchemes').textContent = schemes.length;
+            document.getElementById('viableSchemes').textContent = schemes.filter(s => s.places > 0).length;
+            document.getElementById('totalPlaces').textContent = schemes.reduce((sum, s) => sum + s.places, 0);
+
+            // Calculate data completeness
+            let totalFields = 0;
+            let filledFields = 0;
+            schemes.forEach(s => {
+                totalFields += 7; // 7 data fields per scheme
+                if (s.safetyIndex !== null) filledFields++;
+                if (s.monthlySavings !== null) filledFields++;
+                if (s.airportDistance !== null) filledFields++;
+                if (s.cityPopulation !== null) filledFields++;
+                if (s.transportScore !== null) filledFields++;
+                if (s.imgCommunity !== 'unknown') filledFields++;
+                if (s.hasDirectEgypt) filledFields++;
+            });
+
+            const completeness = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
+            document.getElementById('dataComplete').textContent = completeness + '%';
+        }
+
+        function exportRanking() {
+            const exportData = currentData.map((s, index) => ({
+                'New Rank': index + 1,
+                'Original Rank': s.rank,
+                'Scheme': s.scheme,
+                'Region': s.region,
+                'Area': s.area,
+                'Places': s.places,
+                'Score': s.score.toFixed(1),
+                'Safety Index': s.safetyIndex || '',
+                'Monthly Savings': s.monthlySavings || '',
+                'Airport Distance': s.airportDistance || '',
+                'Direct Egypt': s.hasDirectEgypt ? 'Yes' : 'No',
+                'City Population': s.cityPopulation || '',
+                'Transport Score': s.transportScore || '',
+                'IMG Community': s.imgCommunity
+            }));
+
+            // Convert to CSV
+            const headers = Object.keys(exportData[0]);
+            const csv = [
+                headers.join(','),
+                ...exportData.map(row => headers.map(h => `"${row[h]}"`).join(','))
+            ].join('\n');
+
+            // Download
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'gp_matchmaker_ranking.csv';
+            a.click();
+        }
+
+        function searchHospitals(rank) {
+            alert(`Search for hospitals for rank ${rank} - We'll add this data together!`);
+        }
+
+        function addHospitalData(rank, hospitals) {
+            const scheme = schemes.find(s => s.rank === rank);
+            if (scheme) {
+                scheme.hospitals = hospitals;
+                hospitalLocations[rank] = hospitals;
+                saveData();
+                renderTable();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('gpMatchmakerData', JSON.stringify(schemes));
+            localStorage.setItem('gpMatchmakerHospitals', JSON.stringify(hospitalLocations));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('gpMatchmakerData');
+            const savedHospitals = localStorage.getItem('gpMatchmakerHospitals');
+
+            if (savedHospitals) {
+                const hospitals = JSON.parse(savedHospitals);
+                Object.assign(hospitalLocations, hospitals);
+            }
+
+            if (saved) {
+                const savedData = JSON.parse(saved);
+                // Merge saved data with schemes
+                savedData.forEach(saved => {
+                    const scheme = schemes.find(s => s.id === saved.id);
+                    if (scheme) {
+                        Object.assign(scheme, saved);
+                        // Re-apply hospital data
+                        scheme.hospitals = hospitalLocations[scheme.rank] || [];
+                    }
+                });
+            }
+        }
+
+        function resetData() {
+            if (confirm('Are you sure you want to reset all data? This cannot be undone.')) {
+                schemes.forEach(s => {
+                    s.safetyIndex = null;
+                    s.monthlySavings = null;
+                    s.airportDistance = null;
+                    s.hasDirectEgypt = false;
+                    s.cityPopulation = null;
+                    s.transportScore = null;
+                    s.imgCommunity = 'unknown';
+                    s.score = 0;
+                });
+                localStorage.removeItem('gpMatchmakerData');
+                currentData = [...schemes];
+                renderTable();
+            }
+        }
+
+        // Initialize
+        loadData();
+        currentData = [...schemes];
+        // Sort by rank initially
+        currentData.sort((a, b) => {
+            return a.rank - b.rank;
+        });
+        renderTable();
+    </script>
+</body>
+</html>
