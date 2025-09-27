@@ -166,6 +166,100 @@
             }
         }
 
+        /* Profile Selection Styles */
+        .profile-section {
+            background: #f7f9fc;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .profile-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .profile-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .profile-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .profile-card.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .profile-emoji {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .profile-card strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .profile-card small {
+            display: block;
+            opacity: 0.8;
+            font-size: 0.85em;
+        }
+
+        .custom-preferences {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .custom-preferences.hidden {
+            display: none;
+        }
+
+        .preference-slider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .preference-slider label {
+            flex: 0 0 200px;
+            font-weight: 500;
+        }
+
+        .preference-slider input[type="range"] {
+            flex: 1;
+        }
+
+        .weight-value {
+            flex: 0 0 30px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -364,6 +458,78 @@
             </div>
         </div>
 
+        <!-- User Profile Selection -->
+        <div class="profile-section">
+            <h2>Select Your Profile</h2>
+            <div class="profile-cards">
+                <button class="profile-card" onclick="setProfile('international')">
+                    <span class="profile-emoji">🌍</span>
+                    <strong>International Graduate</strong>
+                    <small>Diverse communities, good transport links</small>
+                </button>
+
+                <button class="profile-card" onclick="setProfile('family')">
+                    <span class="profile-emoji">👨‍👩‍👧</span>
+                    <strong>Family-Focused</strong>
+                    <small>Safe areas, good schools, affordable</small>
+                </button>
+
+                <button class="profile-card" onclick="setProfile('explorer')">
+                    <span class="profile-emoji">🗺️</span>
+                    <strong>Explorer</strong>
+                    <small>Open to rural, new experiences</small>
+                </button>
+
+                <button class="profile-card" onclick="setProfile('saver')">
+                    <span class="profile-emoji">💰</span>
+                    <strong>Cost-Conscious</strong>
+                    <small>Maximize savings potential</small>
+                </button>
+
+                <button class="profile-card" onclick="setProfile('career')">
+                    <span class="profile-emoji">📈</span>
+                    <strong>Career-Focused</strong>
+                    <small>Teaching hospitals, research opportunities</small>
+                </button>
+
+                <button class="profile-card" onclick="toggleCustom()">
+                    <span class="profile-emoji">⚙️</span>
+                    <strong>Custom Preferences</strong>
+                    <small>Fine-tune your priorities</small>
+                </button>
+            </div>
+
+            <!-- Custom preference sliders (hidden by default) -->
+            <div id="customPreferences" class="custom-preferences hidden">
+                <div class="preference-slider">
+                    <label>🌍 International Community</label>
+                    <input type="range" id="intlWeight" min="0" max="10" value="5">
+                    <span class="weight-value">5</span>
+                </div>
+                <div class="preference-slider">
+                    <label>💰 Savings Potential</label>
+                    <input type="range" id="savingsWeight" min="0" max="10" value="5">
+                    <span class="weight-value">5</span>
+                </div>
+                <div class="preference-slider">
+                    <label>✈️ Transport Links</label>
+                    <input type="range" id="transportWeight" min="0" max="10" value="5">
+                    <span class="weight-value">5</span>
+                </div>
+                <div class="preference-slider">
+                    <label>🏡 Quality of Life</label>
+                    <input type="range" id="qolWeight" min="0" max="10" value="5">
+                    <span class="weight-value">5</span>
+                </div>
+                <div class="preference-slider">
+                    <label>📚 Career Development</label>
+                    <input type="range" id="careerWeight" min="0" max="10" value="5">
+                    <span class="weight-value">5</span>
+                </div>
+                <button onclick="applyCustomPreferences()">Apply Custom Preferences</button>
+            </div>
+        </div>
+
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-value" id="reachableSchemes">-</div>
@@ -412,18 +578,16 @@
             <table id="schemesTable">
                 <thead>
                     <tr>
-                        <th>Rank</th>
+                        <th>Strategic<br>Rank</th>
                         <th>Scheme</th>
                         <th>Places</th>
-                        <th>Main Hospitals/Training Sites</th>
-                        <th>Safety Index<br><small>(50 ideal)</small></th>
-                        <th>Monthly Savings<br><small>(£)</small></th>
-                        <th>Airport Dist<br><small>(miles)</small></th>
-                        <th>Direct Egypt</th>
-                        <th>City Pop<br><small>(000s)</small></th>
-                        <th>Transport<br><small>(1-10)</small></th>
-                        <th>IMG Community</th>
-                        <th>Score</th>
+                        <th>Success<br><small>Chance %</small></th>
+                        <th>Preference<br><small>Score %</small></th>
+                        <th>Combined<br><small>Value</small></th>
+                        <th>Category</th>
+                        <th>Min MSRA<br><small>Required</small></th>
+                        <th>Competition<br><small>Level</small></th>
+                        <th>Main Hospitals</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -1178,6 +1342,51 @@
             'doncaster', 'grimsby', 'scarborough', 'highlands'
         ];
 
+        // Scheme characteristics for preference scoring
+        const SCHEME_CHARACTERISTICS = {
+            // Major cities with data
+            'london': { rent: 1800, diversity: 45, airports: 5, trainTime: 0, population: 9000000, teaching: true, crime: 55 },
+            'birmingham': { rent: 850, diversity: 42, airports: 1, trainTime: 84, population: 1141000, teaching: true, crime: 45 },
+            'manchester': { rent: 950, diversity: 35, airports: 1, trainTime: 127, population: 547627, teaching: true, crime: 48 },
+            'leeds': { rent: 850, diversity: 22, airports: 1, trainTime: 131, population: 793139, teaching: true, crime: 42 },
+            'sheffield': { rent: 750, diversity: 19, airports: 0.5, trainTime: 158, population: 584853, teaching: true, crime: 38 },
+            'liverpool': { rent: 750, diversity: 18, airports: 1, trainTime: 134, population: 496784, teaching: true, crime: 44 },
+            'bristol': { rent: 1200, diversity: 28, airports: 1, trainTime: 90, population: 463377, teaching: true, crime: 35 },
+            'cardiff': { rent: 850, diversity: 20, airports: 1, trainTime: 105, population: 362756, teaching: true, crime: 32 },
+            'edinburgh': { rent: 1100, diversity: 16, airports: 1, trainTime: 240, population: 524930, teaching: true, crime: 28 },
+            'glasgow': { rent: 950, diversity: 18, airports: 1, trainTime: 265, population: 635130, teaching: true, crime: 40 },
+            'belfast': { rent: 750, diversity: 8, airports: 1, trainTime: 0, population: 343542, teaching: true, crime: 35 },
+
+            // Mid-size cities
+            'nottingham': { rent: 800, diversity: 28, airports: 0.5, trainTime: 105, population: 321500, teaching: true, crime: 42 },
+            'leicester': { rent: 750, diversity: 45, airports: 0.5, trainTime: 75, population: 355218, teaching: true, crime: 40 },
+            'coventry': { rent: 800, diversity: 33, airports: 0, trainTime: 60, population: 379387, teaching: false, crime: 38 },
+            'bradford': { rent: 600, diversity: 36, airports: 0.5, trainTime: 195, population: 537173, teaching: false, crime: 45 },
+
+            // Smaller/Rural
+            'rural': { rent: 600, diversity: 5, airports: 0, trainTime: 240, population: 50000, teaching: false, crime: 20 },
+            'default': { rent: 750, diversity: 15, airports: 0.5, trainTime: 150, population: 150000, teaching: false, crime: 30 }
+        };
+
+        // User preferences (set by profile or custom)
+        let userPreferences = {
+            intlCommunity: 5,
+            savings: 5,
+            transport: 5,
+            qualityLife: 5,
+            career: 5,
+            profile: null
+        };
+
+        // Profile presets
+        const PROFILE_PRESETS = {
+            'international': { intlCommunity: 10, savings: 5, transport: 8, qualityLife: 6, career: 5 },
+            'family': { intlCommunity: 3, savings: 7, transport: 5, qualityLife: 10, career: 3 },
+            'explorer': { intlCommunity: 2, savings: 4, transport: 3, qualityLife: 8, career: 7 },
+            'saver': { intlCommunity: 3, savings: 10, transport: 3, qualityLife: 4, career: 4 },
+            'career': { intlCommunity: 4, savings: 3, transport: 6, qualityLife: 5, career: 10 }
+        };
+
         // Calculate competitive position for a given MSRA score
         function updateCompetitivePosition() {
             const score = parseInt(document.getElementById('msraTotal').value);
@@ -1358,6 +1567,156 @@
             document.getElementById('reachCount').textContent = reach;
             document.getElementById('matchCount').textContent = match;
             document.getElementById('safetyCount').textContent = safety;
+        }
+
+        // Set user profile
+        function setProfile(profileName) {
+            // Remove selected class from all cards
+            document.querySelectorAll('.profile-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selected class to clicked card
+            event.target.closest('.profile-card').classList.add('selected');
+
+            // Apply preset preferences
+            if (PROFILE_PRESETS[profileName]) {
+                userPreferences = { ...PROFILE_PRESETS[profileName], profile: profileName };
+
+                // Hide custom preferences
+                document.getElementById('customPreferences').classList.add('hidden');
+
+                // Recalculate with new preferences
+                calculateCombinedScores();
+            }
+        }
+
+        // Toggle custom preferences
+        function toggleCustom() {
+            const customDiv = document.getElementById('customPreferences');
+            customDiv.classList.toggle('hidden');
+
+            // Update slider displays
+            document.querySelectorAll('.preference-slider input').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    this.parentElement.querySelector('.weight-value').textContent = this.value;
+                });
+            });
+        }
+
+        // Apply custom preferences
+        function applyCustomPreferences() {
+            userPreferences = {
+                intlCommunity: parseInt(document.getElementById('intlWeight').value),
+                savings: parseInt(document.getElementById('savingsWeight').value),
+                transport: parseInt(document.getElementById('transportWeight').value),
+                qualityLife: parseInt(document.getElementById('qolWeight').value),
+                career: parseInt(document.getElementById('careerWeight').value),
+                profile: 'custom'
+            };
+
+            calculateCombinedScores();
+        }
+
+        // Get scheme characteristics
+        function getSchemeCharacteristics(scheme) {
+            const location = ((scheme.area || '') + ' ' + (scheme.region || '') + ' ' + (scheme.scheme || '')).toLowerCase();
+
+            // Check for specific cities
+            for (const [city, data] of Object.entries(SCHEME_CHARACTERISTICS)) {
+                if (location.includes(city)) {
+                    return data;
+                }
+            }
+
+            // Check if rural
+            if (location.includes('rural') || EX_TERS_AREAS.some(area => location.includes(area))) {
+                return SCHEME_CHARACTERISTICS['rural'];
+            }
+
+            // Default
+            return SCHEME_CHARACTERISTICS['default'];
+        }
+
+        // Calculate preference score for a scheme
+        function calculatePreferenceScore(scheme) {
+            const chars = getSchemeCharacteristics(scheme);
+            let score = 0;
+            let maxScore = 0;
+
+            // International community preference
+            if (userPreferences.intlCommunity > 0) {
+                score += (chars.diversity / 50) * userPreferences.intlCommunity;
+                maxScore += userPreferences.intlCommunity;
+            }
+
+            // Savings preference (inverse of rent)
+            if (userPreferences.savings > 0) {
+                const savingsScore = Math.max(0, (1500 - chars.rent) / 1500);
+                score += savingsScore * userPreferences.savings;
+                maxScore += userPreferences.savings;
+            }
+
+            // Transport preference
+            if (userPreferences.transport > 0) {
+                const transportScore = (chars.airports + (240 - chars.trainTime) / 240) / 2;
+                score += transportScore * userPreferences.transport;
+                maxScore += userPreferences.transport;
+            }
+
+            // Quality of life (inverse of crime)
+            if (userPreferences.qualityLife > 0) {
+                const qolScore = (100 - chars.crime) / 100;
+                score += qolScore * userPreferences.qualityLife;
+                maxScore += userPreferences.qualityLife;
+            }
+
+            // Career development
+            if (userPreferences.career > 0) {
+                const careerScore = chars.teaching ? 1 : 0.3;
+                score += careerScore * userPreferences.career;
+                maxScore += userPreferences.career;
+            }
+
+            // Normalize to 0-100
+            return maxScore > 0 ? (score / maxScore) * 100 : 50;
+        }
+
+        // Calculate combined strategic score
+        function calculateCombinedScores() {
+            if (!userMSRAScore) {
+                alert('Please enter your MSRA score first');
+                return;
+            }
+
+            schemes.forEach(scheme => {
+                // Get competition probability (already calculated)
+                const competitionScore = scheme.probability || 0;
+
+                // Get preference score
+                const preferenceScore = calculatePreferenceScore(scheme);
+                scheme.preferenceScore = Math.round(preferenceScore);
+
+                // Combined strategic value using geometric mean
+                // This ensures both factors matter
+                scheme.combinedScore = Math.round(Math.sqrt(competitionScore * preferenceScore));
+
+                // Categorize based on combined factors
+                if (competitionScore > 70 && preferenceScore > 70) {
+                    scheme.finalCategory = '🌟 IDEAL';
+                } else if (competitionScore > 70 && preferenceScore < 40) {
+                    scheme.finalCategory = '🛡️ SAFETY';
+                } else if (competitionScore < 30 && preferenceScore > 70) {
+                    scheme.finalCategory = '🎯 REACH';
+                } else {
+                    scheme.finalCategory = '⚖️ BALANCED';
+                }
+            });
+
+            // Sort by combined score
+            currentData = [...schemes];
+            currentData.sort((a, b) => b.combinedScore - a.combinedScore);
+            renderTable();
         }
 
         function renderTable() {
