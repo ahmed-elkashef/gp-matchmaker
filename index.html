@@ -494,6 +494,32 @@
             display: none;
         }
 
+        .ranking-notice {
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #fef5e7 0%, #fdebd0 100%);
+            border: 1px solid #f8c471;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .ranking-notice.personalized {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-color: #81c784;
+        }
+
+        .notice-icon {
+            font-size: 1.2em;
+        }
+
+        .notice-text strong {
+            color: #2d3748;
+        }
+
         .dashboard-stats {
             padding: 25px;
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -1166,6 +1192,13 @@
 
         <!-- Results Dashboard -->
         <div class="results-section">
+            <div id="rankingNotice" class="ranking-notice">
+                <span class="notice-icon">ℹ️</span>
+                <span class="notice-text">
+                    <strong>Default Ranking:</strong> Showing original Oriel rankings.
+                    <span style="color: #667eea;">Enter your MSRA score and select preferences above to see your personalized strategic ranking.</span>
+                </span>
+            </div>
             <div class="stats-row">
                 <div class="stat-box">
                     <div class="stat-number" id="reachableSchemes">-</div>
@@ -1217,7 +1250,7 @@
             <table id="schemesTable">
                 <thead>
                     <tr>
-                        <th>Strategic<br>Rank</th>
+                        <th id="rankHeader">Oriel<br>Rank</th>
                         <th>Scheme</th>
                         <th>Places</th>
                         <th>Success<br><small>Chance %</small></th>
@@ -2362,28 +2395,65 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            // Make sure we have calculated strategic scores
-            if (!userMSRAScore) {
-                tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 40px; color: #999;">Please enter your MSRA score and select a profile to see strategic rankings</td></tr>';
-                return;
+            // Check if we have personalized scores
+            const isPersonalized = userMSRAScore && currentData.some(s => s.combinedScore);
+
+            // Update the notice and header
+            const notice = document.getElementById('rankingNotice');
+            const rankHeader = document.getElementById('rankHeader');
+
+            if (isPersonalized) {
+                if (rankHeader) rankHeader.innerHTML = 'Strategic<br>Rank';
+                if (notice) {
+                    notice.classList.add('personalized');
+                    notice.innerHTML = `
+                        <span class="notice-icon">✅</span>
+                        <span class="notice-text">
+                            <strong>Personalized Strategic Ranking:</strong> Optimized for MSRA ${userMSRAScore} with ${userPreferences.profile || 'custom'} preferences.
+                            Showing best matches based on success probability × preference alignment.
+                        </span>
+                    `;
+                }
+            } else {
+                if (rankHeader) rankHeader.innerHTML = 'Oriel<br>Rank';
+                if (notice) {
+                    notice.classList.remove('personalized');
+                    notice.innerHTML = `
+                        <span class="notice-icon">ℹ️</span>
+                        <span class="notice-text">
+                            <strong>Default Ranking:</strong> Showing original Oriel rankings.
+                            <span style="color: #667eea;">Enter your MSRA score and select preferences above to see your personalized strategic ranking.</span>
+                        </span>
+                    `;
+                }
             }
 
-            // Calculate scores if not already done
-            if (!currentData.some(s => s.combinedScore)) {
+            // If personalized, calculate scores if needed
+            if (userMSRAScore && !currentData.some(s => s.combinedScore)) {
                 calculateStrategicScores();
                 calculateCombinedScores();
             }
 
-            // Sort by combined score (best first)
-            currentData.sort((a, b) => {
-                const scoreA = b.combinedScore || 0;
-                const scoreB = a.combinedScore || 0;
-                return scoreA - scoreB;
-            });
+            // Sort based on whether we have personalized scores
+            if (isPersonalized) {
+                // Sort by strategic combined score
+                currentData.sort((a, b) => {
+                    const scoreA = b.combinedScore || 0;
+                    const scoreB = a.combinedScore || 0;
+                    return scoreA - scoreB;
+                });
+            } else {
+                // Sort by original Oriel rank
+                currentData.sort((a, b) => a.rank - b.rank);
+            }
 
             currentData.forEach((scheme, index) => {
                 const row = document.createElement('tr');
                 const placesClass = scheme.places > 0 ? 'places-badge' : 'places-badge no-places';
+
+                // Determine which rank to show
+                const rankDisplay = isPersonalized ? `#${index + 1}` : `${scheme.rank}`;
+                const rankStyle = isPersonalized ? 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;' : '';
 
                 // Success chance color coding
                 const successClass = scheme.probability >= 70 ? 'high-score' :
@@ -2397,10 +2467,11 @@
                 const combClass = scheme.combinedScore >= 70 ? 'high-score' :
                                 scheme.combinedScore >= 40 ? 'medium-score' : 'low-score';
 
-                // Competition level
-                const competitionLevel = scheme.msraRequired > 580 ? '🔴 V.High' :
-                                       scheme.msraRequired > 560 ? '🟠 High' :
-                                       scheme.msraRequired > 540 ? '🟡 Med' : '🟢 Low';
+                // Competition level - show estimated if no MSRA score
+                const competitionLevel = scheme.msraRequired ?
+                    (scheme.msraRequired > 580 ? '🔴 V.High' :
+                     scheme.msraRequired > 560 ? '🟠 High' :
+                     scheme.msraRequired > 540 ? '🟡 Med' : '🟢 Low') : '—';
 
                 // Build simple hospital list (compact)
                 let hospitalsHTML = '';
@@ -2416,7 +2487,7 @@
                 }
 
                 row.innerHTML = `
-                    <td><span class="rank-badge">#${index + 1}</span></td>
+                    <td><span class="rank-badge" style="${rankStyle}">${rankDisplay}</span></td>
                     <td>
                         <div class="scheme-name">${scheme.scheme || 'Unknown'}</div>
                         <div class="location-full">${scheme.region} ${scheme.area ? '• ' + scheme.area : ''}</div>
