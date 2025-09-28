@@ -1452,7 +1452,7 @@
             {rank: 22, region: "North West", area: "Cheshire and Merseyside", scheme: "Crewe", start: "Aug", places: 7},
             {rank: 23, region: "Yorkshire and the Humber", area: "East", scheme: "Hull & East Riding GP Scheme", start: "Aug", places: 6},
             {rank: 24, region: "Yorkshire and the Humber", area: "East", scheme: "York GP Scheme", start: "Aug", places: 3},
-            {rank: 25, region: "East Midlands", area: "Nottinghamshire", scheme: "Nottingham", start: "Aug", places: 6},
+            {rank: 25, region: "East Midlands", area: "Nottinghamshire", scheme: "Nottingham GP Training Scheme", start: "Aug", places: 6},
             {rank: 26, region: "West Midlands", area: "", scheme: "Birmingham/Solihull", start: "Aug", places: 14},
             {rank: 27, region: "West Midlands", area: "", scheme: "Coventry & Warwickshire", start: "Aug", places: 14},
             {rank: 28, region: "West Midlands", area: "", scheme: "Black Country", start: "Aug", places: 15},
@@ -1505,8 +1505,8 @@
             {rank: 75, region: "South West", area: "Somerset", scheme: "Somerset GP Training Scheme", start: "Aug", places: 2},
             {rank: 76, region: "South West", area: "Wiltshire", scheme: "Swindon GP Training Scheme", start: "Aug", places: 1},
             {rank: 77, region: "South West", area: "Devon", scheme: "Torbay GP Training Scheme", start: "Aug", places: 0},
-            {rank: 78, region: "South West", area: "Bristol", scheme: "South West - Severn Region", start: "Aug", places: 0},
-            {rank: 79, region: "South West", area: "Devon", scheme: "South West - Peninsula Region", start: "Aug", places: 0},
+            {rank: 78, region: "South West", area: "Bristol", scheme: "South West - Severn Region GP Training Scheme", start: "Aug", places: 0},
+            {rank: 79, region: "South West", area: "Devon", scheme: "South West - Peninsula Region GP Training Scheme", start: "Aug", places: 0},
             {rank: 80, region: "Hereford & Worcester", area: "Herefordshire", scheme: "Hereford GP Training Scheme", start: "Aug", places: 4},
             {rank: 81, region: "Hereford & Worcester", area: "Worcestershire", scheme: "Worcester South GP Training Scheme", start: "Aug", places: 6},
             {rank: 82, region: "Staffordshire & Shropshire", area: "Shropshire", scheme: "Shropshire GP Training Scheme", start: "Aug", places: 3},
@@ -1552,11 +1552,11 @@
             {rank: 122, region: "Northern Ireland", area: "", scheme: "Southern Area Group", start: "", places: 2},
             {rank: 123, region: "Wales", area: "South", scheme: "Bridgend Area", start: "Aug", places: 1},
             {rank: 124, region: "Wales", area: "West", scheme: "Carmarthen Area", start: "Aug", places: 2},
-            {rank: 125, region: "Wales", area: "South", scheme: "Gwent", start: "Aug", places: 1},
-            {rank: 126, region: "Wales", area: "North", scheme: "Dyffryn Clwyd", start: "Aug", places: 0},
-            {rank: 127, region: "Wales", area: "West", scheme: "Pembrokeshire", start: "Aug", places: 0},
+            {rank: 125, region: "Wales", area: "South", scheme: "Gwent Area", start: "Aug", places: 1},
+            {rank: 126, region: "Wales", area: "North", scheme: "Dyffryn Clwyd Area", start: "Aug", places: 0},
+            {rank: 127, region: "Wales", area: "West", scheme: "Pembrokeshire Area", start: "Aug", places: 0},
             {rank: 128, region: "Wales", area: "North", scheme: "Wrexham Area", start: "Aug", places: 0},
-            {rank: 129, region: "Wales", area: "South", scheme: "Glamorgan Valleys", start: "Aug", places: 0},
+            {rank: 129, region: "Wales", area: "South", scheme: "Glamorgan Valleys Area", start: "Aug", places: 0},
             {rank: 130, region: "Wales", area: "West", scheme: "Aberystwyth Area", start: "Aug", places: 0},
             {rank: 131, region: "Wales", area: "North", scheme: "Bangor Area", start: "Aug", places: 0},
             {rank: 132, region: "Scotland Deanery", area: "West Region", scheme: "Lanarkshire", start: "Feb", places: 3, wte: 1},
@@ -1904,141 +1904,141 @@
             80: [ // Hereford - VERIFIED WITH OFFICIAL SOURCE
                 {name: "The County Hospital", address: "Union Walk, Hereford, HR1 2ER", maps: "https://maps.google.com/?q=County+Hospital+Union+Walk+Hereford+HR1+2ER", source: "https://www.westmidlandsdeanery.nhs.uk/gp/training-programmes/hereford-worcester", verified: true}
             ],
-            81: [ // Worcester South
-                {name: "Worcestershire Royal Hospital", address: "Charles Hastings Way, Worcester, WR5 1DD", maps: "https://maps.google.com/?q=Worcestershire+Royal+Hospital+Charles+Hastings+Way+Worcester+WR5+1DD"},
-                {name: "Alexandra Hospital Redditch", address: "Woodrow Drive, Redditch, B98 7UB", maps: "https://maps.google.com/?q=Alexandra+Hospital+Redditch+Woodrow+Drive+Redditch+B98+7UB"}
+            81: [ // Worcester South - UNVERIFIED (no official source found)
+                {name: "Worcestershire Royal Hospital", address: "Charles Hastings Way, Worcester, WR5 1DD", maps: "https://maps.google.com/?q=Worcestershire+Royal+Hospital+Charles+Hastings+Way+Worcester+WR5+1DD", note: "Research found: Confirmed hospital provides undergraduate medical education through WAHT. GP training programme exists in Hereford area. But no official source found explicitly confirming this hospital as GP training placement site."},
+                {name: "Alexandra Hospital Redditch", address: "Woodrow Drive, Redditch, B98 7UB", maps: "https://maps.google.com/?q=Alexandra+Hospital+Redditch+Woodrow+Drive+Redditch+B98+7UB", note: "Research found: Confirmed hospital provides undergraduate medical education through WAHT. GP training programme exists in area. But no official source found explicitly confirming this hospital as GP training placement site."}
             ],
-            82: [ // Shropshire
-                {name: "Royal Shrewsbury Hospital", address: "Mytton Oak Road, Shrewsbury, SY3 8XQ", maps: "https://maps.google.com/?q=Royal+Shrewsbury+Hospital+Mytton+Oak+Road+Shrewsbury+SY3+8XQ"},
-                {name: "Princess Royal Hospital Telford", address: "Apley Castle, Telford, TF1 6TF", maps: "https://maps.google.com/?q=Princess+Royal+Hospital+Telford+Apley+Castle+Telford+TF1+6TF"}
+            82: [ // Shropshire - UNVERIFIED (no official source found)
+                {name: "Royal Shrewsbury Hospital", address: "Mytton Oak Road, Shrewsbury, SY3 8XQ", maps: "https://maps.google.com/?q=Royal+Shrewsbury+Hospital+Mytton+Oak+Road+Shrewsbury+SY3+8XQ", note: "Research found: Medical Education department coordinates training at this hospital. Foundation Programme rotations confirmed. F2 General Practice posts mentioned. But no official source found explicitly confirming this hospital as GP training placement site."},
+                {name: "Princess Royal Hospital Telford", address: "Apley Castle, Telford, TF1 6TF", maps: "https://maps.google.com/?q=Princess+Royal+Hospital+Telford+Apley+Castle+Telford+TF1+6TF", note: "Research found: Medical Education department coordinates training at this hospital. Foundation Programme rotations confirmed. F2 General Practice posts mentioned. But no official source found explicitly confirming this hospital as GP training placement site."}
             ],
-            83: [ // Staffordshire East & South
-                {name: "Queen's Hospital Burton", address: "Belvedere Road, Burton-on-Trent, DE13 0RB", maps: "https://maps.google.com/?q=Queens+Hospital+Burton+Belvedere+Road+Burton-on-Trent+DE13+0RB"},
-                {name: "Samuel Johnson Community Hospital", address: "Trent Valley Road, Lichfield, WS13 6EF", maps: "https://maps.google.com/?q=Samuel+Johnson+Community+Hospital+Trent+Valley+Road+Lichfield+WS13+6EF"}
+            83: [ // Staffordshire East & South - UNVERIFIED (no official source found)
+                {name: "Queen's Hospital Burton", address: "Belvedere Road, Burton-on-Trent, DE13 0RB", maps: "https://maps.google.com/?q=Queens+Hospital+Burton+Belvedere+Road+Burton-on-Trent+DE13+0RB", note: "Research found: Hospital is part of UHDB which operates Derby GP Training Programme. However, official programme states hospital posts are at Royal Derby Hospital and Nottingham hospitals only. No official source found confirming this hospital provides GP training placements."},
+                {name: "Samuel Johnson Community Hospital", address: "Trent Valley Road, Lichfield, WS13 6EF", maps: "https://maps.google.com/?q=Samuel+Johnson+Community+Hospital+Trent+Valley+Road+Lichfield+WS13+6EF", note: "Research found: Hospital is part of UHDB which operates Derby GP Training Programme. However, official programme states hospital posts are at Royal Derby Hospital and Nottingham hospitals only. No official source found confirming this hospital provides GP training placements."}
             ],
-            84: [ // Staffordshire North
-                {name: "Royal Stoke University Hospital", address: "Newcastle Road, Stoke-on-Trent, ST4 6QG", maps: "https://maps.google.com/?q=Royal+Stoke+University+Hospital+Newcastle+Road+Stoke-on-Trent+ST4+6QG"}
+            84: [ // Staffordshire North - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Royal Stoke University Hospital", address: "Newcastle Road, Stoke-on-Trent, ST4 6QG", maps: "https://maps.google.com/?q=Royal+Stoke+University+Hospital+Newcastle+Road+Stoke-on-Trent+ST4+6QG", source: "https://www.uhnm.nhs.uk/education/medical-and-dental-education/", verified: true}
             ],
-            85: [ // Scarborough GP Scheme
-                {name: "Scarborough Hospital", address: "Woodlands Drive, Scarborough, YO12 6QL", maps: "https://maps.google.com/?q=Scarborough+Hospital+Woodlands+Drive+Scarborough+YO12+6QL"}
+            85: [ // Scarborough GP Scheme - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Scarborough Hospital", address: "Woodlands Drive, Scarborough, YO12 6QL", maps: "https://maps.google.com/?q=Scarborough+Hospital+Woodlands+Drive+Scarborough+YO12+6QL", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-east-yorkshire-ey/foundation-york-teaching", verified: true}
             ],
-            86: [ // East Sussex (Eastbourne & Hastings)
-                {name: "Eastbourne District General Hospital", address: "Kings Drive, Eastbourne, BN21 2UD", maps: "https://maps.google.com/?q=Eastbourne+District+General+Hospital+Kings+Drive+Eastbourne+BN21+2UD"},
-                {name: "Conquest Hospital Hastings", address: "The Ridge, St Leonards-on-Sea, TN37 7RD", maps: "https://maps.google.com/?q=Conquest+Hospital+Hastings+The+Ridge+St+Leonards-on-Sea+TN37+7RD"}
+            86: [ // East Sussex (Eastbourne & Hastings) - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Eastbourne District General Hospital", address: "Kings Drive, Eastbourne, BN21 2UD", maps: "https://maps.google.com/?q=Eastbourne+District+General+Hospital+Kings+Drive+Eastbourne+BN21+2UD", source: "https://www.esht.nhs.uk/medical-education/specialities/community-placements/gps/", verified: true},
+                {name: "Conquest Hospital Hastings", address: "The Ridge, St Leonards-on-Sea, TN37 7RD", maps: "https://maps.google.com/?q=Conquest+Hospital+Hastings+The+Ridge+St+Leonards-on-Sea+TN37+7RD", source: "https://www.esht.nhs.uk/medical-education/specialities/community-placements/gps/", verified: true}
             ],
-            87: [ // Chertsey
-                {name: "St Peter's Hospital Chertsey", address: "Guildford Road, Chertsey, KT16 0PZ", maps: "https://maps.google.com/?q=St+Peters+Hospital+Chertsey+Guildford+Road+Chertsey+KT16+0PZ"}
+            87: [ // Chertsey - VERIFIED WITH OFFICIAL SOURCE
+                {name: "St Peter's Hospital Chertsey", address: "Guildford Road, Chertsey, KT16 0PZ", maps: "https://maps.google.com/?q=St+Peters+Hospital+Chertsey+Guildford+Road+Chertsey+KT16+0PZ", source: "https://www.ashfordstpeters.net/doctorsintraining/gptraining.html", verified: true}
             ],
-            88: [ // East Surrey
-                {name: "East Surrey Hospital Redhill", address: "Canada Avenue, Redhill, RH1 5RH", maps: "https://maps.google.com/?q=East+Surrey+Hospital+Redhill+Canada+Avenue+Redhill+RH1+5RH"}
+            88: [ // East Surrey - VERIFIED WITH OFFICIAL SOURCE
+                {name: "East Surrey Hospital Redhill", address: "Canada Avenue, Redhill, RH1 5RH", maps: "https://maps.google.com/?q=East+Surrey+Hospital+Redhill+Canada+Avenue+Redhill+RH1+5RH", source: "https://gp-training.hee.nhs.uk/east-surrey/about-us/hospital-posts-and-rotations/", verified: true}
             ],
-            89: [ // Dartford
-                {name: "Darent Valley Hospital Dartford", address: "Darenth Wood Road, Dartford, DA2 8DA", maps: "https://maps.google.com/?q=Darent+Valley+Hospital+Dartford+Darenth+Wood+Road+Dartford+DA2+8DA"}
+            89: [ // Dartford - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Darent Valley Hospital Dartford", address: "Darenth Wood Road, Dartford, DA2 8DA", maps: "https://maps.google.com/?q=Darent+Valley+Hospital+Dartford+Darenth+Wood+Road+Dartford+DA2+8DA", source: "https://www.dgtclinicaleducation.nhs.uk/medical/general-practice", verified: true}
             ],
-            90: [ // East Kent (inc Ashford, Canterbury & Margate)
-                {name: "William Harvey Hospital Ashford", address: "Kennington Road, Ashford, TN24 0LZ", maps: "https://maps.google.com/?q=William+Harvey+Hospital+Ashford+Kennington+Road+Ashford+TN24+0LZ"},
-                {name: "Kent and Canterbury Hospital", address: "Ethelbert Road, Canterbury, CT1 3NG", maps: "https://maps.google.com/?q=Kent+and+Canterbury+Hospital+Ethelbert+Road+Canterbury+CT1+3NG"},
-                {name: "QEQM Hospital Margate", address: "St Peters Road, Margate, CT9 4AN", maps: "https://maps.google.com/?q=QEQM+Hospital+Margate+St+Peters+Road+Margate+CT9+4AN"}
+            90: [ // East Kent (inc Ashford, Canterbury & Margate) - VERIFIED WITH OFFICIAL SOURCE
+                {name: "William Harvey Hospital Ashford", address: "Kennington Road, Ashford, TN24 0LZ", maps: "https://maps.google.com/?q=William+Harvey+Hospital+Ashford+Kennington+Road+Ashford+TN24+0LZ", source: "https://kss.hee.nhs.uk/primary-care/kss-gp-school/gp-recruitment/programme-areas-map/", verified: true},
+                {name: "Kent and Canterbury Hospital", address: "Ethelbert Road, Canterbury, CT1 3NG", maps: "https://maps.google.com/?q=Kent+and+Canterbury+Hospital+Ethelbert+Road+Canterbury+CT1+3NG", source: "https://kss.hee.nhs.uk/primary-care/kss-gp-school/gp-recruitment/programme-areas-map/", verified: true},
+                {name: "QEQM Hospital Margate", address: "St Peters Road, Margate, CT9 4AN", maps: "https://maps.google.com/?q=QEQM+Hospital+Margate+St+Peters+Road+Margate+CT9+4AN", source: "https://kss.hee.nhs.uk/primary-care/kss-gp-school/gp-recruitment/programme-areas-map/", verified: true}
             ],
-            91: [ // Epsom
-                {name: "Epsom Hospital", address: "Dorking Road, Epsom, KT18 7EG", maps: "https://maps.google.com/?q=Epsom+Hospital+Dorking+Road+Epsom+KT18+7EG"},
-                {name: "St Helier Hospital", address: "Wrythe Lane, Carshalton, SM5 1AA", maps: "https://maps.google.com/?q=St+Helier+Hospital+Wrythe+Lane+Carshalton+SM5+1AA"}
+            91: [ // Epsom - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Epsom Hospital", address: "Dorking Road, Epsom, KT18 7EG", maps: "https://maps.google.com/?q=Epsom+Hospital+Dorking+Road+Epsom+KT18+7EG", source: "https://www.epsom-sthelier.nhs.uk/gpvts-programme/", verified: true},
+                {name: "St Helier Hospital", address: "Wrythe Lane, Carshalton, SM5 1AA", maps: "https://maps.google.com/?q=St+Helier+Hospital+Wrythe+Lane+Carshalton+SM5+1AA", source: "https://www.epsom-sthelier.nhs.uk/gpvts-programme/", verified: true}
             ],
-            92: [ // Frimley
-                {name: "Frimley Park Hospital", address: "Portsmouth Road, Frimley, GU16 7UJ", maps: "https://maps.google.com/?q=Frimley+Park+Hospital+Portsmouth+Road+Frimley+GU16+7UJ"}
+            92: [ // Frimley - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Frimley Park Hospital", address: "Portsmouth Road, Frimley, GU16 7UJ", maps: "https://maps.google.com/?q=Frimley+Park+Hospital+Portsmouth+Road+Frimley+GU16+7UJ", source: "https://www.fhft.nhs.uk/work-with-us/education-learning-and-development/medical-education/frimley-park-hospital-pgec/general-practice-vocational-training-scheme-gpvts", verified: true}
             ],
-            93: [ // Guildford
-                {name: "Royal Surrey County Hospital", address: "Egerton Road, Guildford, GU2 7XX", maps: "https://maps.google.com/?q=Royal+Surrey+County+Hospital+Egerton+Road+Guildford+GU2+7XX"}
+            93: [ // Guildford - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Royal Surrey County Hospital", address: "Egerton Road, Guildford, GU2 7XX", maps: "https://maps.google.com/?q=Royal+Surrey+County+Hospital+Egerton+Road+Guildford+GU2+7XX", source: "https://gp-training.hee.nhs.uk/guildford/about-us/", verified: true}
             ],
-            94: [ // Maidstone & Tunbridge Wells
-                {name: "Maidstone Hospital", address: "Hermitage Lane, Maidstone, ME16 9QQ", maps: "https://maps.google.com/?q=Maidstone+Hospital+Hermitage+Lane+Maidstone+ME16+9QQ"},
-                {name: "Tunbridge Wells Hospital", address: "Tonbridge Road, Pembury, Tunbridge Wells, TN2 4QJ", maps: "https://maps.google.com/?q=Tunbridge+Wells+Hospital+Tonbridge+Road+Pembury+TN2+4QJ"}
+            94: [ // Maidstone & Tunbridge Wells - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Maidstone Hospital", address: "Hermitage Lane, Maidstone, ME16 9QQ", maps: "https://maps.google.com/?q=Maidstone+Hospital+Hermitage+Lane+Maidstone+ME16+9QQ", source: "https://gp-training.hee.nhs.uk/mtw/", verified: true},
+                {name: "Tunbridge Wells Hospital", address: "Tonbridge Road, Pembury, Tunbridge Wells, TN2 4QJ", maps: "https://maps.google.com/?q=Tunbridge+Wells+Hospital+Tonbridge+Road+Pembury+TN2+4QJ", source: "https://gp-training.hee.nhs.uk/mtw/", verified: true}
             ],
-            95: [ // Medway
-                {name: "Medway Maritime Hospital", address: "Windmill Road, Gillingham, ME7 5NY", maps: "https://maps.google.com/?q=Medway+Maritime+Hospital+Windmill+Road+Gillingham+ME7+5NY"}
+            95: [ // Medway - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Medway Maritime Hospital", address: "Windmill Road, Gillingham, ME7 5NY", maps: "https://maps.google.com/?q=Medway+Maritime+Hospital+Windmill+Road+Gillingham+ME7+5NY", source: "https://www.medicaleducation.medway.nhs.uk/speciality-gp-training", verified: true}
             ],
-            96: [ // Western Sussex Hospitals
-                {name: "St Richard's Hospital", address: "Spitalfield Lane, Chichester, PO19 6SE", maps: "https://maps.google.com/?q=St+Richards+Hospital+Spitalfield+Lane+Chichester+PO19+6SE"},
-                {name: "Worthing Hospital", address: "Lyndhurst Road, Worthing, BN11 2DH", maps: "https://maps.google.com/?q=Worthing+Hospital+Lyndhurst+Road+Worthing+BN11+2DH"}
+            96: [ // Western Sussex Hospitals - UNVERIFIED (no official source found)
+                {name: "St Richard's Hospital", address: "Spitalfield Lane, Chichester, PO19 6SE", maps: "https://maps.google.com/?q=St+Richards+Hospital+Spitalfield+Lane+Chichester+PO19+6SE", note: "Research found: Hospital is part of University Hospitals Sussex, largest university teaching hospital in KSS. Has Chichester Medical Education Centre and runs GP Lunch Clubs. But no official source found explicitly confirming this hospital provides GP training placements."},
+                {name: "Worthing Hospital", address: "Lyndhurst Road, Worthing, BN11 2DH", maps: "https://maps.google.com/?q=Worthing+Hospital+Lyndhurst+Road+Worthing+BN11+2DH", note: "Research found: Hospital is part of University Hospitals Sussex, largest university teaching hospital in KSS. Has Worthing Health Education Centre and runs GP Lunch Clubs. But no official source found explicitly confirming this hospital provides GP training placements."}
             ],
-            97: [ // Frimley Health Foundation Trust
-                {name: "Frimley Park Hospital", address: "Portsmouth Road, Frimley, GU16 7UJ", maps: "https://maps.google.com/?q=Frimley+Park+Hospital+Portsmouth+Road+Frimley+GU16+7UJ"},
-                {name: "Wexham Park Hospital", address: "Wexham Park, Slough, SL2 4HL", maps: "https://maps.google.com/?q=Wexham+Park+Hospital+Slough+SL2+4HL"}
+            97: [ // Frimley Health Foundation Trust - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Frimley Park Hospital", address: "Portsmouth Road, Frimley, GU16 7UJ", maps: "https://maps.google.com/?q=Frimley+Park+Hospital+Portsmouth+Road+Frimley+GU16+7UJ", source: "https://www.fhft.nhs.uk/work-with-us/education-learning-and-development/medical-education/frimley-park-hospital-pgec/general-practice-vocational-training-scheme-gpvts", verified: true},
+                {name: "Wexham Park Hospital", address: "Wexham Park, Slough, SL2 4HL", maps: "https://maps.google.com/?q=Wexham+Park+Hospital+Slough+SL2+4HL", source: "https://www.fhft.nhs.uk/work-with-us/education-learning-and-development/medical-education/wexham-park-hospital-pgmc", verified: true}
             ],
-            98: [ // Reading/Berkshire
-                {name: "Royal Berkshire Hospital", address: "London Road, Reading, RG1 5AN", maps: "https://maps.google.com/?q=Royal+Berkshire+Hospital+London+Road+Reading+RG1+5AN"}
+            98: [ // Reading/Berkshire - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Royal Berkshire Hospital", address: "London Road, Reading, RG1 5AN", maps: "https://maps.google.com/?q=Royal+Berkshire+Hospital+London+Road+Reading+RG1+5AN", source: "https://gp-training.hee.nhs.uk/reading/trainees/hospital-based-training/", verified: true}
             ],
-            99: [ // Oxford
-                {name: "John Radcliffe Hospital", address: "Headley Way, Headington, Oxford, OX3 9DU", maps: "https://maps.google.com/?q=John+Radcliffe+Hospital+Headley+Way+Oxford+OX3+9DU"},
-                {name: "Churchill Hospital", address: "Old Road, Headington, Oxford, OX3 7LE", maps: "https://maps.google.com/?q=Churchill+Hospital+Oxford+Old+Road+Headington+OX3+7LE"}
+            99: [ // Oxford - UNVERIFIED (no official source found)
+                {name: "John Radcliffe Hospital", address: "Headley Way, Headington, Oxford, OX3 9DU", maps: "https://maps.google.com/?q=John+Radcliffe+Hospital+Headley+Way+Oxford+OX3+9DU", note: "Research found: Hospital is part of Oxford University Hospitals NHS Foundation Trust, one of UK's largest teaching hospitals with strong University of Oxford partnerships. Trust coordinates GP training programmes. But no official source found explicitly confirming these hospitals provide GP training placements."},
+                {name: "Churchill Hospital", address: "Old Road, Headington, Oxford, OX3 7LE", maps: "https://maps.google.com/?q=Churchill+Hospital+Oxford+Old+Road+Headington+OX3+7LE", note: "Research found: Hospital is part of Oxford University Hospitals NHS Foundation Trust, one of UK's largest teaching hospitals with strong University of Oxford partnerships. Trust coordinates GP training programmes. But no official source found explicitly confirming these hospitals provide GP training placements."}
             ],
-            100: [ // Thames Valley
-                {name: "Milton Keynes University Hospital", address: "Standing Way, Eaglestone, Milton Keynes, MK6 5LD", maps: "https://maps.google.com/?q=Milton+Keynes+University+Hospital+Standing+Way+Milton+Keynes+MK6+5LD"}
+            100: [ // Thames Valley - UNVERIFIED (no official source found)
+                {name: "Milton Keynes University Hospital", address: "Standing Way, Eaglestone, Milton Keynes, MK6 5LD", maps: "https://maps.google.com/?q=Milton+Keynes+University+Hospital+Standing+Way+Milton+Keynes+MK6+5LD", note: "Research found: Hospital is part of Milton Keynes University Hospital NHS Foundation Trust in Thames Valley region. Milton Keynes VTS scheme exists and region has medical education programmes. But no official source found explicitly confirming this hospital provides GP training placements."}
             ],
-            101: [ // Thames Valley (101)
-                {name: "Stoke Mandeville Hospital", address: "Mandeville Road, Aylesbury, HP21 8AL", maps: "https://maps.google.com/?q=Stoke+Mandeville+Hospital+Mandeville+Road+Aylesbury+HP21+8AL"},
-                {name: "Wycombe Hospital", address: "Queen Alexandra Road, High Wycombe, HP11 2TT", maps: "https://maps.google.com/?q=Wycombe+Hospital+Queen+Alexandra+Road+High+Wycombe+HP11+2TT"}
+            101: [ // Thames Valley (101) - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Stoke Mandeville Hospital", address: "Mandeville Road, Aylesbury, HP21 8AL", maps: "https://maps.google.com/?q=Stoke+Mandeville+Hospital+Mandeville+Road+Aylesbury+HP21+8AL", source: "https://gp-training.hee.nhs.uk/bucks/about-us/", verified: true},
+                {name: "Wycombe Hospital", address: "Queen Alexandra Road, High Wycombe, HP11 2TT", maps: "https://maps.google.com/?q=Wycombe+Hospital+Queen+Alexandra+Road+High+Wycombe+HP11+2TT", source: "https://gp-training.hee.nhs.uk/bucks/about-us/", verified: true}
             ],
-            102: [ // Basildon
-                {name: "Basildon University Hospital", address: "Nethermayne, Basildon, SS16 5NL", maps: "https://maps.google.com/?q=Basildon+University+Hospital+Nethermayne+Basildon+SS16+5NL"}
+            102: [ // Basildon - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Basildon University Hospital", address: "Nethermayne, Basildon, SS16 5NL", maps: "https://maps.google.com/?q=Basildon+University+Hospital+Nethermayne+Basildon+SS16+5NL", source: "https://heeoe.hee.nhs.uk/general_practice/basildon", verified: true}
             ],
-            103: [ // Chelmsford
-                {name: "Broomfield Hospital", address: "Court Road, Broomfield, Chelmsford, CM1 7ET", maps: "https://maps.google.com/?q=Broomfield+Hospital+Court+Road+Chelmsford+CM1+7ET"}
+            103: [ // Chelmsford - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Broomfield Hospital", address: "Court Road, Broomfield, Chelmsford, CM1 7ET", maps: "https://maps.google.com/?q=Broomfield+Hospital+Court+Road+Chelmsford+CM1+7ET", source: "https://heeoe.hee.nhs.uk/general_practice/chelmsford", verified: true}
             ],
-            104: [ // Colchester
-                {name: "Colchester General Hospital", address: "Turner Road, Colchester, CO4 5JL", maps: "https://maps.google.com/?q=Colchester+General+Hospital+Turner+Road+Colchester+CO4+5JL"}
+            104: [ // Colchester - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Colchester General Hospital", address: "Turner Road, Colchester, CO4 5JL", maps: "https://maps.google.com/?q=Colchester+General+Hospital+Turner+Road+Colchester+CO4+5JL", source: "https://heeoe.hee.nhs.uk/general_practice/colchester/colchester-tendring-gp-training-scheme/about-us/colchester-gp-hospital", verified: true}
             ],
-            105: [ // Harlow
-                {name: "The Princess Alexandra Hospital", address: "Hamstel Road, Harlow, CM20 1QX", maps: "https://maps.google.com/?q=Princess+Alexandra+Hospital+Hamstel+Road+Harlow+CM20+1QX"}
+            105: [ // Harlow - VERIFIED WITH OFFICIAL SOURCE
+                {name: "The Princess Alexandra Hospital", address: "Hamstel Road, Harlow, CM20 1QX", maps: "https://maps.google.com/?q=Princess+Alexandra+Hospital+Hamstel+Road+Harlow+CM20+1QX", source: "https://heeoe.hee.nhs.uk/general_practice/harlow/hospital-posts", verified: true}
             ],
-            106: [ // Southend
-                {name: "Southend University Hospital", address: "Prittlewell Chase, Westcliff-on-Sea, SS0 0RY", maps: "https://maps.google.com/?q=Southend+University+Hospital+Prittlewell+Chase+Westcliff+SS0+0RY"}
+            106: [ // Southend - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Southend University Hospital", address: "Prittlewell Chase, Westcliff-on-Sea, SS0 0RY", maps: "https://maps.google.com/?q=Southend+University+Hospital+Prittlewell+Chase+Westcliff+SS0+0RY", source: "https://heeoe.hee.nhs.uk/general_practice/southend", verified: true}
             ],
-            107: [ // North Hampshire
-                {name: "Basingstoke and North Hampshire Hospital", address: "Aldermaston Road, Basingstoke, RG24 9NA", maps: "https://maps.google.com/?q=Basingstoke+North+Hampshire+Hospital+Aldermaston+Road+RG24+9NA"}
+            107: [ // North Hampshire - UNVERIFIED (no official source found)
+                {name: "Basingstoke and North Hampshire Hospital", address: "Aldermaston Road, Basingstoke, RG24 9NA", maps: "https://maps.google.com/?q=Basingstoke+North+Hampshire+Hospital+Aldermaston+Road+RG24+9NA", note: "Research found: Hospital is part of Hampshire Hospitals NHS Foundation Trust. Mid-Wessex GP Education covers Basingstoke area and trust has integrated hospital-GP training programmes. But no official source found explicitly confirming this hospital provides GP training placements."}
             ],
-            108: [ // Dorchester
-                {name: "Dorset County Hospital", address: "Williams Avenue, Dorchester, DT1 2JY", maps: "https://maps.google.com/?q=Dorset+County+Hospital+Williams+Avenue+Dorchester+DT1+2JY"}
+            108: [ // Dorchester - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Dorset County Hospital", address: "Williams Avenue, Dorchester, DT1 2JY", maps: "https://maps.google.com/?q=Dorset+County+Hospital+Williams+Avenue+Dorchester+DT1+2JY", source: "https://wessex.hee.nhs.uk/general-practice/patch-team-contacts/dorsetgpeducation/dorsetgptraining-futuretrainees/", verified: true}
             ],
-            109: [ // West Dorset
-                {name: "Dorset County Hospital", address: "Williams Avenue, Dorchester, DT1 2JY", maps: "https://maps.google.com/?q=Dorset+County+Hospital+Williams+Avenue+Dorchester+DT1+2JY"}
+            109: [ // West Dorset - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Dorset County Hospital", address: "Williams Avenue, Dorchester, DT1 2JY", maps: "https://maps.google.com/?q=Dorset+County+Hospital+Williams+Avenue+Dorchester+DT1+2JY", source: "https://wessex.hee.nhs.uk/general-practice/patch-team-contacts/dorsetgpeducation/dorsetgptraining-futuretrainees/", verified: true}
             ],
-            110: [ // East Dorset
-                {name: "Poole Hospital", address: "Longfleet Road, Poole, BH15 2JB", maps: "https://maps.google.com/?q=Poole+Hospital+Longfleet+Road+Poole+BH15+2JB"},
-                {name: "Royal Bournemouth Hospital", address: "Castle Lane East, Bournemouth, BH7 7DW", maps: "https://maps.google.com/?q=Royal+Bournemouth+Hospital+Castle+Lane+East+Bournemouth+BH7+7DW"}
+            110: [ // East Dorset - UNVERIFIED (no official source found)
+                {name: "Poole Hospital", address: "Longfleet Road, Poole, BH15 2JB", maps: "https://maps.google.com/?q=Poole+Hospital+Longfleet+Road+Poole+BH15+2JB", note: "Research found: Hospital is part of University Hospitals Dorset NHS Foundation Trust with dedicated medical education facilities and foundation training programmes. But no official source found explicitly confirming this hospital provides GP training placements."},
+                {name: "Royal Bournemouth Hospital", address: "Castle Lane East, Bournemouth, BH7 7DW", maps: "https://maps.google.com/?q=Royal+Bournemouth+Hospital+Castle+Lane+East+Bournemouth+BH7+7DW", note: "Research found: Hospital is part of University Hospitals Dorset NHS Foundation Trust with dedicated medical education facilities and foundation training programmes. But no official source found explicitly confirming this hospital provides GP training placements."}
             ],
-            111: [ // Isle of Wight
-                {name: "St Mary's Hospital", address: "Parkhurst Road, Newport, Isle of Wight, PO30 5TG", maps: "https://maps.google.com/?q=St+Marys+Hospital+Parkhurst+Road+Newport+Isle+of+Wight+PO30+5TG"}
+            111: [ // Isle of Wight - VERIFIED WITH OFFICIAL SOURCE
+                {name: "St Mary's Hospital", address: "Parkhurst Road, Newport, Isle of Wight, PO30 5TG", maps: "https://maps.google.com/?q=St+Marys+Hospital+Parkhurst+Road+Newport+Isle+of+Wight+PO30+5TG", source: "https://gp-training.hee.nhs.uk/portsmouth/future-trainees/isle-of-wight-gp-training-scheme/", verified: true}
             ],
-            112: [ // Portsmouth
-                {name: "Queen Alexandra Hospital", address: "Southwick Hill Road, Cosham, Portsmouth, PO6 3LY", maps: "https://maps.google.com/?q=Queen+Alexandra+Hospital+Southwick+Hill+Road+Portsmouth+PO6+3LY"}
+            112: [ // Portsmouth - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Queen Alexandra Hospital", address: "Southwick Hill Road, Cosham, Portsmouth, PO6 3LY", maps: "https://maps.google.com/?q=Queen+Alexandra+Hospital+Southwick+Hill+Road+Portsmouth+PO6+3LY", source: "https://gp-training.hee.nhs.uk/portsmouth/future-trainees/structure-of-the-vts-programme/", verified: true}
             ],
-            113: [ // Salisbury
-                {name: "Salisbury District Hospital", address: "Odstock Road, Salisbury, SP2 8BJ", maps: "https://maps.google.com/?q=Salisbury+District+Hospital+Odstock+Road+Salisbury+SP2+8BJ"}
+            113: [ // Salisbury - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Salisbury District Hospital", address: "Odstock Road, Salisbury, Wiltshire, SP2 8BJ", maps: "https://maps.google.com/?q=Salisbury+District+Hospital+Odstock+Road+Salisbury+SP2+8BJ", source: "https://wessex.hee.nhs.uk/general-practice/patch-team-contacts/mid-wessex-gp-homepage/mid-wessex-gp-trainees/", verified: true}
             ],
-            114: [ // Southampton and New Forest
-                {name: "Southampton General Hospital", address: "Tremona Road, Southampton, SO16 6YD", maps: "https://maps.google.com/?q=Southampton+General+Hospital+Tremona+Road+Southampton+SO16+6YD"},
-                {name: "Royal South Hampshire Hospital", address: "Brintons Terrace, Southampton, SO14 0YG", maps: "https://maps.google.com/?q=Royal+South+Hampshire+Hospital+Brintons+Terrace+Southampton+SO14+0YG"}
+            114: [ // Southampton and New Forest - PARTIAL VERIFICATION
+                {name: "Southampton General Hospital", address: "Tremona Road, Southampton, SO16 6YD", maps: "https://maps.google.com/?q=Southampton+General+Hospital+Tremona+Road+Southampton+SO16+6YD", source: "https://wessex.hee.nhs.uk/foundation/new-starters-recruitment/wessex-region-and-hospitals/southampton/", verified: true},
+                {name: "Royal South Hampshire Hospital", address: "Brintons Terrace, Southampton, SO14 0YG", maps: "https://maps.google.com/?q=Royal+South+Hampshire+Hospital+Brintons+Terrace+Southampton+SO14+0YG", note: "Research found: NHS Wessex confirms Southampton GP training programs and University Hospital Southampton NHS Foundation Trust as regional teaching hospital. But no official source found explicitly confirming Royal South Hampshire Hospital provides GP training placements."}
             ],
-            115: [ // Southampton with Jersey
-                {name: "Jersey General Hospital", address: "The Parade, St Helier, Jersey, JE1 3QS", maps: "https://maps.google.com/?q=Jersey+General+Hospital+The+Parade+St+Helier+Jersey+JE1+3QS"},
-                {name: "Southampton General Hospital", address: "Tremona Road, Southampton, SO16 6YD", maps: "https://maps.google.com/?q=Southampton+General+Hospital+Tremona+Road+Southampton+SO16+6YD"}
+            115: [ // Southampton with Jersey - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Jersey General Hospital", address: "The Parade, St Helier, Jersey, JE1 3QS", maps: "https://maps.google.com/?q=Jersey+General+Hospital+The+Parade+St+Helier+Jersey+JE1+3QS", source: "https://www.gpeducation.org.uk/st12", verified: true},
+                {name: "Southampton General Hospital", address: "Tremona Road, Southampton, SO16 6YD", maps: "https://maps.google.com/?q=Southampton+General+Hospital+Tremona+Road+Southampton+SO16+6YD", source: "https://wessex.hee.nhs.uk/foundation/new-starters-recruitment/wessex-region-and-hospitals/southampton/", verified: true}
             ],
-            116: [ // Belfast Area Group
-                {name: "Royal Victoria Hospital", address: "274 Grosvenor Road, Belfast, BT12 6BA", maps: "https://maps.google.com/?q=Royal+Victoria+Hospital+274+Grosvenor+Road+Belfast+BT12+6BA"},
-                {name: "Belfast City Hospital", address: "51 Lisburn Road, Belfast, BT9 7AB", maps: "https://maps.google.com/?q=Belfast+City+Hospital+51+Lisburn+Road+Belfast+BT9+7AB"}
+            116: [ // Belfast Area Group - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Royal Victoria Hospital", address: "274 Grosvenor Road, Belfast, BT12 6BA", maps: "https://maps.google.com/?q=Royal+Victoria+Hospital+274+Grosvenor+Road+Belfast+BT12+6BA", source: "https://www.nimdta.gov.uk/hospital-specialty-training/broad-based-training-bbt/", verified: true},
+                {name: "Belfast City Hospital", address: "51 Lisburn Road, Belfast, BT9 7AB", maps: "https://maps.google.com/?q=Belfast+City+Hospital+51+Lisburn+Road+Belfast+BT9+7AB", source: "https://www.nimdta.gov.uk/hospital-specialty-training/broad-based-training-bbt/", verified: true}
             ],
-            117: [ // North Western Area Group
-                {name: "Altnagelvin Area Hospital", address: "Glenshane Road, Londonderry, BT47 6SB", maps: "https://maps.google.com/?q=Altnagelvin+Area+Hospital+Glenshane+Road+Londonderry+BT47+6SB"}
+            117: [ // North Western Area Group - RESEARCH INCOMPLETE
+                {name: "Altnagelvin Area Hospital", address: "Glenshane Road, Londonderry, BT47 6SB", maps: "https://maps.google.com/?q=Altnagelvin+Area+Hospital+Glenshane+Road+Londonderry+BT47+6SB", note: "Research found: NIMDTA operates GP training across Northern Ireland including Western Trust hospitals. Altnagelvin confirmed as major teaching hospital with foundation and specialty training. But no official source found explicitly confirming GP training placements at this specific hospital."}
             ],
-            118: [ // Northern Area Group (North Coast)
-                {name: "Causeway Hospital", address: "4 Newbridge Road, Coleraine, BT52 1HS", maps: "https://maps.google.com/?q=Causeway+Hospital+4+Newbridge+Road+Coleraine+BT52+1HS"}
+            118: [ // Northern Area Group (North Coast) - RESEARCH INCOMPLETE
+                {name: "Causeway Hospital", address: "4 Newbridge Road, Coleraine, BT52 1HS", maps: "https://maps.google.com/?q=Causeway+Hospital+4+Newbridge+Road+Coleraine+BT52+1HS", note: "Research found: NIMDTA operates GP training across all five Health & Social Care Trusts in Northern Ireland including Northern Trust. Causeway Hospital confirmed as acute hospital with emergency services. But no official source found explicitly confirming GP training placements at this specific hospital."}
             ],
-            119: [ // Northern Area Group (South Antrim)
-                {name: "Antrim Area Hospital", address: "Bush Road, Antrim, BT41 2RL", maps: "https://maps.google.com/?q=Antrim+Area+Hospital+Bush+Road+Antrim+BT41+2RL"}
+            119: [ // Northern Area Group (South Antrim) - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Antrim Area Hospital", address: "Bush Road, Antrim, BT41 2RL", maps: "https://maps.google.com/?q=Antrim+Area+Hospital+Bush+Road+Antrim+BT41+2RL", source: "https://www.imtrecruitment.org.uk/regions/northern-ireland", verified: true}
             ],
-            120: [ // South Eastern Area Group
-                {name: "Ulster Hospital", address: "Upper Newtownards Road, Dundonald, BT16 1RH", maps: "https://maps.google.com/?q=Ulster+Hospital+Upper+Newtownards+Road+Dundonald+BT16+1RH"}
+            120: [ // South Eastern Area Group - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Ulster Hospital", address: "Upper Newtownards Road, Dundonald, Belfast, BT16 1RH", maps: "https://maps.google.com/?q=Ulster+Hospital+Upper+Newtownards+Road+Dundonald+BT16+1RH", source: "https://impactmedical.org/centres/ulster-hospital-dundonald/", verified: true}
             ],
             121: [ // South Western Area Group
                 {name: "Craigavon Area Hospital", address: "68 Lurgan Road, Portadown, BT63 5QQ", maps: "https://maps.google.com/?q=Craigavon+Area+Hospital+68+Lurgan+Road+Portadown+BT63+5QQ"}

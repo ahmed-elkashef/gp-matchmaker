@@ -81,13 +81,47 @@ When a scheme cannot be verified despite thorough searching:
 - Note any schemes where no official sources found
 - Continue systematically through all 161 ranks
 
+### 9. Scheme Name Consistency Check
+**CRITICAL**: After verifying hospitals, check scheme name descriptiveness:
+
+**Problem Identified**: Some scheme names lack detail compared to others
+- ❌ **Inconsistent**: "Bath", "Bristol", "Derby" (too brief)
+- ✅ **Consistent**: "Yorkshire and the Humber - West - Leeds GP Scheme" (detailed)
+
+**Solution Process**:
+1. **Compare naming patterns** across regions
+2. **Identify less descriptive schemes** (usually single city names)
+3. **Enhance scheme names** to match detailed patterns:
+   - Add "GP Training Scheme" suffix
+   - Include county/area information in `area` field
+   - Maintain regional consistency
+
+**Example Enhancement**:
+```javascript
+// BEFORE (less descriptive)
+{rank: 67, region: "South West", area: "", scheme: "Bath", start: "Aug", places: 0}
+
+// AFTER (consistent detail)
+{rank: 67, region: "South West", area: "Somerset", scheme: "Bath GP Training Scheme", start: "Aug", places: 0}
+```
+
+**Regions to Check for Consistency**:
+- South West schemes (often too brief)
+- East Midlands schemes (missing area information)
+- Single-word scheme names across all regions
+
+**When to Apply**:
+- After completing hospital verification for a batch of 10+ ranks
+- When scheme names appear inconsistent with established patterns
+- Before committing major verification milestones
+
 ## Current Status
-- Rank 1 (Leeds): ✅ Complete - 3 hospitals verified
-- Rank 2 (Sheffield): ✅ Complete - 4 hospitals verified
-- Rank 3+: Pending verification
+- Ranks 1-80: ✅ Complete - All hospitals verified and scheme names enhanced
+- Ranks 81+: Pending verification
 
 ## Important Notes
 - **Quality over speed** - better to have fewer verified hospitals than many unverified
 - **Official sources only** - no guessing or assumption
 - **Document everything** - always include source URLs
 - **Be systematic** - don't skip ranks or work out of order
+- **Maintain consistency** - ensure all scheme names follow similar descriptive patterns
