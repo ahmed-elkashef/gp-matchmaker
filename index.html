@@ -646,6 +646,132 @@
             transition: background 0.2s;
         }
 
+        .expand-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s;
+            color: #718096;
+            padding: 0;
+        }
+
+        .expand-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: rotate(90deg);
+        }
+
+        .expand-btn.expanded {
+            transform: rotate(90deg);
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .details-row {
+            display: none;
+            background: #fafbfc;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .details-row.visible {
+            display: table-row;
+        }
+
+        .details-content {
+            padding: 15px;
+            border-left: 3px solid #667eea;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .detail-section {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .detail-section h4 {
+            font-size: 0.85em;
+            color: #4a5568;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .hospital-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .hospital-item {
+            background: #f7fafc;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            border-left: 2px solid #cbd5e0;
+        }
+
+        .hospital-item.verified {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .location-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 8px;
+            background: #f7fafc;
+            border-radius: 6px;
+        }
+
+        .metric-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .metric-label {
+            font-size: 0.7em;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .rank-badge {
             display: inline-block;
             padding: 3px 8px;
@@ -901,6 +1027,16 @@
             th, td {
                 padding: 8px 6px;
                 font-size: 0.85em;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .expand-btn {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
             }
         }
 
@@ -1250,6 +1386,7 @@
             <table id="schemesTable">
                 <thead>
                     <tr>
+                        <th></th>
                         <th id="rankHeader">Oriel<br>Rank</th>
                         <th>Scheme</th>
                         <th>Places</th>
@@ -2449,6 +2586,7 @@
 
             currentData.forEach((scheme, index) => {
                 const row = document.createElement('tr');
+                row.setAttribute('data-row-id', scheme.rank);
                 const placesClass = scheme.places > 0 ? 'places-badge' : 'places-badge no-places';
 
                 // Determine which rank to show
@@ -2473,20 +2611,16 @@
                      scheme.msraRequired > 560 ? '🟠 High' :
                      scheme.msraRequired > 540 ? '🟡 Med' : '🟢 Low') : '—';
 
-                // Build simple hospital list (compact)
-                let hospitalsHTML = '';
-                if (scheme.hospitals && scheme.hospitals.length > 0) {
-                    hospitalsHTML = scheme.hospitals.slice(0, 2).map(h =>
-                        `<div style="font-size: 0.75em; line-height: 1.2;">${h.verified ? '✅' : '⚠️'} ${h.name}</div>`
-                    ).join('');
-                    if (scheme.hospitals.length > 2) {
-                        hospitalsHTML += `<div style="font-size: 0.7em; color: #999;">+${scheme.hospitals.length - 2} more</div>`;
-                    }
-                } else {
-                    hospitalsHTML = `<span style="color: #cbd5e0; font-size: 0.75em;">—</span>`;
-                }
+                // Hospital count for main row
+                const hospitalCount = scheme.hospitals ? scheme.hospitals.length : 0;
+                const hospitalsText = hospitalCount > 0 ?
+                    `${hospitalCount} hospital${hospitalCount > 1 ? 's' : ''}` :
+                    'No data';
 
                 row.innerHTML = `
+                    <td>
+                        <button class="expand-btn" onclick="toggleDetails(${scheme.rank})">▶</button>
+                    </td>
                     <td><span class="rank-badge" style="${rankStyle}">${rankDisplay}</span></td>
                     <td>
                         <div class="scheme-name">${scheme.scheme || 'Unknown'}</div>
@@ -2499,9 +2633,74 @@
                     <td style="font-size: 0.8em;">${scheme.finalCategory || '—'}</td>
                     <td style="font-size: 0.85em;">${scheme.msraRequired || '—'}</td>
                     <td style="font-size: 0.8em;">${competitionLevel}</td>
-                    <td style="min-width: 120px; max-width: 200px;">${hospitalsHTML}</td>
+                    <td style="font-size: 0.75em; color: #718096;">${hospitalsText}</td>
                 `;
                 tbody.appendChild(row);
+
+                // Create details row
+                const detailsRow = document.createElement('tr');
+                detailsRow.className = 'details-row';
+                detailsRow.setAttribute('data-details-for', scheme.rank);
+
+                // Get location characteristics
+                const chars = getSchemeCharacteristics(scheme);
+
+                // Build hospital details
+                let hospitalsDetailHTML = '';
+                if (scheme.hospitals && scheme.hospitals.length > 0) {
+                    hospitalsDetailHTML = scheme.hospitals.map(h => `
+                        <div class="hospital-item ${h.verified ? 'verified' : ''}">
+                            <div style="font-weight: 600;">${h.verified ? '✅' : '⚠️'} ${h.name}</div>
+                            <div style="color: #718096; margin-top: 2px;">${h.address}</div>
+                            ${h.source ? `<a href="${h.source}" target="_blank" style="color: #667eea; font-size: 0.9em;">Official Source</a>` : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    hospitalsDetailHTML = '<div style="color: #999;">No hospital data available</div>';
+                }
+
+                detailsRow.innerHTML = `
+                    <td colspan="12">
+                        <div class="details-content">
+                            <div class="details-grid">
+                                <div class="detail-section">
+                                    <h4>🏥 Training Hospitals</h4>
+                                    <div class="hospital-list">${hospitalsDetailHTML}</div>
+                                </div>
+                                <div class="detail-section">
+                                    <h4>📍 Location Characteristics</h4>
+                                    <div class="location-metrics">
+                                        <div class="metric-item">
+                                            <div class="metric-value">${chars.internationalScore}/10</div>
+                                            <div class="metric-label">🌍 Diversity</div>
+                                        </div>
+                                        <div class="metric-item">
+                                            <div class="metric-value">£${chars.rentMonthly}</div>
+                                            <div class="metric-label">🏠 Rent/mo</div>
+                                        </div>
+                                        <div class="metric-item">
+                                            <div class="metric-value">${chars.nearestAirport || 'N/A'}</div>
+                                            <div class="metric-label">✈️ Airport</div>
+                                        </div>
+                                        <div class="metric-item">
+                                            <div class="metric-value">${chars.muslimFacilities ? 'Yes' : 'Limited'}</div>
+                                            <div class="metric-label">🕌 Community</div>
+                                        </div>
+                                        <div class="metric-item">
+                                            <div class="metric-value">${chars.qualityScore}/10</div>
+                                            <div class="metric-label">🏡 Quality</div>
+                                        </div>
+                                        <div class="metric-item">
+                                            <div class="metric-value">${chars.careerScore}/10</div>
+                                            <div class="metric-label">📚 Training</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(detailsRow);
             });
 
             updateStats();
@@ -2622,6 +2821,17 @@
             });
 
             renderTable();
+        }
+
+        function toggleDetails(rank) {
+            const detailsRow = document.querySelector(`tr[data-details-for="${rank}"]`);
+            const expandBtn = document.querySelector(`tr[data-row-id="${rank}"] .expand-btn`);
+
+            if (detailsRow && expandBtn) {
+                detailsRow.classList.toggle('visible');
+                expandBtn.classList.toggle('expanded');
+                expandBtn.textContent = expandBtn.classList.contains('expanded') ? '▼' : '▶';
+            }
         }
 
         function updateStats() {
