@@ -502,16 +502,24 @@
         th {
             background: #f8fafc;
             color: #4a5568;
-            padding: 16px 12px;
+            padding: 10px 8px;
             text-align: left;
             font-weight: 600;
-            font-size: 0.85em;
+            font-size: 0.75em;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             position: sticky;
             top: 0;
             z-index: 10;
             border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        th small {
+            display: block;
+            font-size: 0.9em;
+            opacity: 0.8;
+            text-transform: none;
         }
 
         th:first-child {
@@ -523,10 +531,10 @@
         }
 
         td {
-            padding: 14px 12px;
+            padding: 10px 8px;
             border-bottom: 1px solid #f1f5f9;
             vertical-align: middle;
-            font-size: 0.95em;
+            font-size: 0.85em;
             color: #2d3748;
         }
 
@@ -541,10 +549,10 @@
 
         .rank-badge {
             display: inline-block;
-            padding: 5px 10px;
+            padding: 3px 8px;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 0.85em;
+            font-size: 0.8em;
             background: #f7fafc;
             color: #4a5568;
             border: 1px solid #e2e8f0;
@@ -702,11 +710,12 @@
         .scheme-name {
             font-weight: 600;
             color: #1a202c;
-            font-size: 0.95em;
+            font-size: 0.9em;
+            line-height: 1.3;
         }
 
         .location-full {
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: #718096;
             margin-top: 2px;
         }
@@ -2101,13 +2110,13 @@
 
         // Set user profile
         function setProfile(profileName) {
-            // Remove selected class from all cards
-            document.querySelectorAll('.profile-card').forEach(card => {
+            // Remove selected class from all profile options
+            document.querySelectorAll('.profile-option').forEach(card => {
                 card.classList.remove('selected');
             });
 
-            // Add selected class to clicked card
-            event.target.closest('.profile-card').classList.add('selected');
+            // Add selected class to clicked option
+            event.target.closest('.profile-option').classList.add('selected');
 
             // Apply preset preferences
             if (PROFILE_PRESETS[profileName]) {
@@ -2253,63 +2262,73 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            // Sort by rank before rendering
+            // Make sure we have calculated strategic scores
+            if (!userMSRAScore) {
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 40px; color: #999;">Please enter your MSRA score and select a profile to see strategic rankings</td></tr>';
+                return;
+            }
+
+            // Calculate scores if not already done
+            if (!currentData.some(s => s.combinedScore)) {
+                calculateStrategicScores();
+                calculateCombinedScores();
+            }
+
+            // Sort by combined score (best first)
             currentData.sort((a, b) => {
-                return a.rank - b.rank;
+                const scoreA = b.combinedScore || 0;
+                const scoreB = a.combinedScore || 0;
+                return scoreA - scoreB;
             });
 
-            currentData.forEach(scheme => {
+            currentData.forEach((scheme, index) => {
                 const row = document.createElement('tr');
                 const placesClass = scheme.places > 0 ? 'places-badge' : 'places-badge no-places';
-                const scoreClass = scheme.score >= 70 ? 'high-score' : scheme.score >= 40 ? 'medium-score' : 'low-score';
 
-                // Build hospital links HTML
+                // Success chance color coding
+                const successClass = scheme.probability >= 70 ? 'high-score' :
+                                   scheme.probability >= 40 ? 'medium-score' : 'low-score';
+
+                // Preference score color coding
+                const prefClass = scheme.preferenceScore >= 70 ? 'high-score' :
+                                scheme.preferenceScore >= 40 ? 'medium-score' : 'low-score';
+
+                // Combined score color coding
+                const combClass = scheme.combinedScore >= 70 ? 'high-score' :
+                                scheme.combinedScore >= 40 ? 'medium-score' : 'low-score';
+
+                // Competition level
+                const competitionLevel = scheme.msraRequired > 580 ? '🔴 V.High' :
+                                       scheme.msraRequired > 560 ? '🟠 High' :
+                                       scheme.msraRequired > 540 ? '🟡 Med' : '🟢 Low';
+
+                // Build simple hospital list (compact)
                 let hospitalsHTML = '';
                 if (scheme.hospitals && scheme.hospitals.length > 0) {
-                    hospitalsHTML = scheme.hospitals.map(h => {
-                        const verifiedIcon = h.verified ? '✅' : '⚠️';
-                        const verifiedText = h.verified ? 'VERIFIED' : 'UNVERIFIED';
-                        const sourceLink = h.source ? `<a href="${h.source}" target="_blank" style="color: #28a745; font-size: 0.7em; text-decoration: none;">📄 Official Source</a>` : '';
-                        const noteIcon = h.note ? `<span title="${h.note}" style="color: #666; font-size: 0.7em; cursor: help;">ℹ️ Research Notes</span>` : '';
-
-                        return `<div style="margin-bottom: 8px; padding: 6px; border-left: 3px solid ${h.verified ? '#28a745' : '#ffc107'}; background: ${h.verified ? '#f8fff9' : '#fffbf0'};">
-                            <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 2px;">
-                                <span style="font-size: 0.7em;">${verifiedIcon} ${verifiedText}</span>
-                                ${sourceLink}
-                                ${noteIcon}
-                            </div>
-                            <a href="${h.maps}" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 500;">
-                                📍 ${h.name}
-                            </a>
-                            <div style="font-size: 0.8em; color: #666; margin-top: 2px;">${h.address}</div>
-                        </div>`;
-                    }).join('');
+                    hospitalsHTML = scheme.hospitals.slice(0, 2).map(h =>
+                        `<div style="font-size: 0.75em; line-height: 1.2;">${h.verified ? '✅' : '⚠️'} ${h.name}</div>`
+                    ).join('');
+                    if (scheme.hospitals.length > 2) {
+                        hospitalsHTML += `<div style="font-size: 0.7em; color: #999;">+${scheme.hospitals.length - 2} more</div>`;
+                    }
                 } else {
-                    hospitalsHTML = `<button onclick="searchHospitals(${scheme.rank})" style="padding: 4px 8px; font-size: 12px;">🔍 Search</button>`;
+                    hospitalsHTML = `<span style="color: #cbd5e0; font-size: 0.75em;">—</span>`;
                 }
 
                 row.innerHTML = `
-                    <td><span class="rank-badge">${scheme.rank}</span></td>
+                    <td><span class="rank-badge">#${index + 1}</span></td>
                     <td>
-                        <div class="scheme-name">${scheme.scheme || 'Unknown Scheme'}</div>
+                        <div class="scheme-name">${scheme.scheme || 'Unknown'}</div>
                         <div class="location-full">${scheme.region} ${scheme.area ? '• ' + scheme.area : ''}</div>
                     </td>
                     <td><span class="${placesClass}">${scheme.places}</span></td>
-                    <td style="min-width: 250px;">${hospitalsHTML}</td>
-                    <td><input type="number" value="${scheme.safetyIndex || ''}" onchange="updateField(${scheme.id}, 'safetyIndex', this.value)" placeholder="--"></td>
-                    <td><input type="number" value="${scheme.monthlySavings || ''}" onchange="updateField(${scheme.id}, 'monthlySavings', this.value)" placeholder="--"></td>
-                    <td><input type="number" value="${scheme.airportDistance || ''}" onchange="updateField(${scheme.id}, 'airportDistance', this.value)" placeholder="--"></td>
-                    <td><input type="checkbox" ${scheme.hasDirectEgypt ? 'checked' : ''} onchange="updateField(${scheme.id}, 'hasDirectEgypt', this.checked)"></td>
-                    <td><input type="number" value="${scheme.cityPopulation || ''}" onchange="updateField(${scheme.id}, 'cityPopulation', this.value)" placeholder="--"></td>
-                    <td><input type="number" min="1" max="10" value="${scheme.transportScore || ''}" onchange="updateField(${scheme.id}, 'transportScore', this.value)" placeholder="--"></td>
-                    <td>
-                        <select onchange="updateField(${scheme.id}, 'imgCommunity', this.value)">
-                            <option value="unknown" ${scheme.imgCommunity === 'unknown' ? 'selected' : ''}>Unknown</option>
-                            <option value="yes" ${scheme.imgCommunity === 'yes' ? 'selected' : ''}>Yes</option>
-                            <option value="no" ${scheme.imgCommunity === 'no' ? 'selected' : ''}>No</option>
-                        </select>
-                    </td>
-                    <td><span class="score ${scoreClass}">${scheme.score.toFixed(1)}</span></td>
+                    <td><span class="${successClass}">${scheme.probability ? Math.round(scheme.probability) + '%' : '—'}</span></td>
+                    <td><span class="${prefClass}">${scheme.preferenceScore ? scheme.preferenceScore + '%' : '—'}</span></td>
+                    <td><span class="${combClass}" style="font-weight: 700;">${scheme.combinedScore || '—'}</span></td>
+                    <td style="font-size: 0.8em;">${scheme.finalCategory || '—'}</td>
+                    <td style="font-size: 0.85em;">${scheme.msraRequired || '—'}</td>
+                    <td style="font-size: 0.8em;">${competitionLevel}</td>
+                    <td style="min-width: 120px; max-width: 200px;">${hospitalsHTML}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -2554,10 +2573,11 @@
         // Initialize
         loadData();
         currentData = [...schemes];
-        // Sort by rank initially
+        // Sort by original rank initially
         currentData.sort((a, b) => {
             return a.rank - b.rank;
         });
+        // Show empty state initially - user needs to enter MSRA score
         renderTable();
     </script>
 </body>
