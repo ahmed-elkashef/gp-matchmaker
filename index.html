@@ -110,23 +110,72 @@
         }
 
         .msra-input-row {
-            padding: 20px;
+            padding: 15px 20px;
             display: flex;
+            align-items: stretch;
+            gap: 0;
+            position: relative;
+        }
+
+        .msra-input-option {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            justify-content: center;
+            background: #fafbfc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .msra-input-option:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .msra-input-option:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: none;
+        }
+
+        .msra-or-divider {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 6px 10px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            font-size: 11px;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            z-index: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .input-label {
+            font-size: 11px;
+            color: #718096;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .msra-main-input {
-            font-size: 20px;
-            padding: 12px 18px;
-            width: 240px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            font-size: 18px;
+            padding: 10px 16px;
+            width: 180px;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 8px;
             text-align: center;
             font-weight: 600;
             transition: all 0.3s;
-            background: #fafbfc;
+            background: white;
         }
 
         .msra-main-input:focus {
@@ -139,48 +188,57 @@
         .component-alternative {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-        }
-
-        .component-alternative small {
-            color: #666;
-            font-style: italic;
-            font-size: 0.75em;
+            align-items: center;
+            gap: 8px;
         }
 
         .component-inputs {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .component-inputs span {
+            color: #718096;
+            font-weight: 500;
+            font-size: 14px;
         }
 
         .component-input {
-            width: 70px;
-            padding: 8px;
-            border: 1px solid #e2e8f0;
+            width: 65px;
+            padding: 8px 6px;
+            border: 1.5px solid #cbd5e0;
             border-radius: 6px;
             text-align: center;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
+            background: white;
         }
 
         .calc-btn {
-            padding: 6px 10px;
-            background: #667eea;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
+            transition: all 0.2s;
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.35);
         }
 
         .competitive-position {
-            margin: 20px;
-            margin-top: 0;
-            padding: 15px;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border-radius: 10px;
-            border-top: 2px solid #667eea;
+            margin: 0 20px 20px;
+            padding: 12px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
             animation: slideIn 0.3s ease-out;
         }
 
@@ -191,49 +249,46 @@
         .position-display {
             display: flex;
             align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .score-circle {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            width: 70px;
-            height: 70px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.2);
+            flex-shrink: 0;
         }
 
         .score-interpretation {
             flex: 1;
-            min-width: 200px;
-        }
-
-        .score-interpretation span {
-            display: block;
-            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
         }
 
         #percentile {
             background: #48bb78;
             color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 0.75em;
+            font-size: 0.7em;
             display: inline-block;
+            margin-bottom: 4px;
         }
 
         #scoreInterpretation {
-            font-size: 13px;
-            color: #555;
+            font-size: 12px;
+            color: #4a5568;
             font-weight: 500;
-            margin-top: 6px;
+            line-height: 1.4;
         }
 
         @keyframes slideIn {
@@ -748,6 +803,31 @@
                 gap: 15px;
             }
 
+            .msra-input-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .msra-input-option {
+                width: 100%;
+            }
+
+            .msra-input-option:first-child {
+                border-radius: 8px;
+            }
+
+            .msra-input-option:last-child {
+                border-radius: 8px;
+                border-left: 1px solid #e2e8f0;
+            }
+
+            .msra-or-divider {
+                position: static;
+                transform: none;
+                margin: -6px auto;
+                width: fit-content;
+            }
+
             .msra-main-input {
                 width: 100%;
             }
@@ -963,16 +1043,21 @@
             </div>
 
             <div class="msra-input-row">
-                <input type="number" id="msraTotal" placeholder="Enter total score (400-650)" min="400" max="650"
-                       onchange="updateCompetitivePosition()" class="msra-main-input">
+                <div class="msra-input-option">
+                    <div class="input-label">Total Score</div>
+                    <input type="number" id="msraTotal" placeholder="400-650" min="400" max="650"
+                           onchange="updateCompetitivePosition()" class="msra-main-input">
+                </div>
 
-                <div class="component-alternative">
-                    <small>or enter components:</small>
+                <div class="msra-or-divider">OR</div>
+
+                <div class="msra-input-option">
+                    <div class="input-label">Component Scores</div>
                     <div class="component-inputs">
                         <input type="number" id="msraPD" placeholder="PD" min="150" max="350" class="component-input">
                         <span>+</span>
                         <input type="number" id="msraCPS" placeholder="CPS" min="150" max="350" class="component-input">
-                        <button onclick="calculateFromComponents()" class="calc-btn">→</button>
+                        <button onclick="calculateFromComponents()" class="calc-btn">Calculate</button>
                     </div>
                 </div>
             </div>
