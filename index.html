@@ -1580,15 +1580,15 @@
             {rank: 150, region: "Scotland Deanery", area: "North Region (Islands)", scheme: "Caledonian Track 5 - Western Isles GP Programme", start: "Feb", places: 0, wte: 1},
             {rank: 151, region: "Scotland Deanery", area: "East Region (Tayside/Forth Valley)", scheme: "Westward GP Programme (Perth/Dundee/Larbert)", start: "Feb", places: 2, wte: 1},
             {rank: 152, region: "Scotland Deanery", area: "East Region (Tayside/Angus)", scheme: "Eastward GP Programme (Dundee/Angus/NE Fife)", start: "Feb", places: 0, wte: 1},
-            {rank: 153, region: "North West", area: "Cheshire and Merseyside", scheme: "Isle of Man", start: "Aug", places: 0},
-            {rank: 154, region: "Defence Medical Services", area: "", scheme: "Defence Medical Services", start: "", places: 0},
-            {rank: 155, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Western Isles)", start: "Feb", places: 0, wte: 1},
-            {rank: 156, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Shetland)", start: "Feb", places: 0, wte: 1},
-            {rank: 157, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Orkney)", start: "Feb", places: 0, wte: 1},
-            {rank: 158, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Oban)", start: "Feb", places: 0, wte: 1},
-            {rank: 159, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Lochgilphead)", start: "Feb", places: 0, wte: 1},
-            {rank: 160, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Fort William)", start: "Feb", places: 0, wte: 1},
-            {rank: 161, region: "Scotland Deanery", area: "North Region", scheme: "National Rural Track (Caithness)", start: "Feb", places: 0, wte: 1}
+            {rank: 153, region: "North West", area: "Isle of Man (Crown Dependency)", scheme: "Isle of Man GP Specialty Training Programme", start: "Aug", places: 0},
+            {rank: 154, region: "Defence Medical Services", area: "UK-wide Military Bases", scheme: "Defence GP Specialty Training Programme (Tri-Service)", start: "", places: 0},
+            {rank: 155, region: "Scotland Deanery", area: "North Region (Western Isles)", scheme: "National Rural Track - Western Isles (Stornoway) GP Programme", start: "Feb", places: 0, wte: 1},
+            {rank: 156, region: "Scotland Deanery", area: "North Region (Shetland Islands)", scheme: "National Rural Track - Shetland (Lerwick) GP Programme", start: "Feb", places: 0, wte: 1},
+            {rank: 157, region: "Scotland Deanery", area: "North Region (Orkney Islands)", scheme: "National Rural Track - Orkney (Kirkwall) GP Programme", start: "Feb", places: 0, wte: 1},
+            {rank: 158, region: "Scotland Deanery", area: "North Region (Argyll West Coast)", scheme: "National Rural Track - Oban (Argyll) GP Programme", start: "Feb", places: 0, wte: 1},
+            {rank: 159, region: "Scotland Deanery", area: "North Region (Mid Argyll)", scheme: "National Rural Track - Lochgilphead (Mid Argyll) GP Programme", start: "Feb", places: 0, wte: 1},
+            {rank: 160, region: "Scotland Deanery", area: "North Region (Lochaber Highlands)", scheme: "National Rural Track - Fort William (Lochaber) GP Programme", start: "Feb", places: 0, wte: 1},
+            {rank: 161, region: "Scotland Deanery", area: "North Region (Far North Highlands)", scheme: "National Rural Track - Caithness (Wick) GP Programme", start: "Feb", places: 0, wte: 1}
         ];
 
         // Hospital/training location data
@@ -2184,32 +2184,42 @@
                 {name: "Kingsway Care Centre", address: "7 Kings Cross Road, Dundee, DD2 3PT", maps: "https://maps.google.com/?q=Kingsway+Care+Centre+7+Kings+Cross+Road+Dundee+DD2+3PT", source: "https://www.scotmt.scot.nhs.uk/general-practice/programme-information/gp-programme-descriptors/east/eastward/", verified: true},
                 {name: "Roxburghe House", address: "Jedburgh Road, Dundee, DD2 1SP", maps: "https://maps.google.com/?q=Roxburghe+House+Jedburgh+Road+Dundee+DD2+1SP", source: "https://www.scotmt.scot.nhs.uk/general-practice/programme-information/gp-programme-descriptors/east/eastward/", verified: true}
             ],
-            153: [ // Isle of Man
-                {name: "Noble's Hospital", address: "Strang, Douglas, Isle of Man, IM4 4RJ", maps: "https://maps.google.com/?q=Nobles+Hospital+Strang+Douglas+Isle+of+Man+IM4+4RJ"}
+            153: [ // Isle of Man GP Specialty Training
+                {name: "Noble's Hospital", address: "Strang, Braddan, Douglas, Isle of Man, IM4 4RJ", maps: "https://maps.google.com/?q=Nobles+Hospital+Strang+Braddan+Douglas+Isle+of+Man+IM4+4RJ", source: "https://www.locate.im/articles/training-as-a-gp-in-the-isle-of-man", verified: true, note: "Island's only general hospital - hosts all GP trainee rotations (Medicine, Surgery, A&E, etc.). Entire programme on Isle of Man with no mainland rotations. Supported by Health Education North West."}
             ],
-            154: [ // Defence Medical Services
-                {name: "Defence Medical Services", address: "Various UK Military Bases", maps: ""}
+            154: [ // Defence Medical Services GP Training
+                {name: "MDHU Frimley Park", address: "Portsmouth Road, Frimley, Camberley, Surrey, GU16 5UJ", maps: "https://maps.google.com/?q=Frimley+Park+Hospital+Portsmouth+Road+Frimley+Camberley+Surrey+GU16+5UJ", source: "https://www.slideserve.com/cece/gp-training-in-the-defence-medical-services", verified: true},
+                {name: "MDHU Portsmouth (Queen Alexandra Hospital)", address: "Southwick Hill Road, Cosham, Portsmouth, PO6 3LY", maps: "https://maps.google.com/?q=Queen+Alexandra+Hospital+Southwick+Hill+Road+Cosham+Portsmouth+PO6+3LY", source: "https://www.slideserve.com/cece/gp-training-in-the-defence-medical-services", verified: true},
+                {name: "MDHU Derriford", address: "Derriford Road, Crownhill, Plymouth, PL6 8DH", maps: "https://maps.google.com/?q=Derriford+Hospital+Derriford+Road+Crownhill+Plymouth+PL6+8DH", source: "https://publications.parliament.uk/pa/cm199899/cmselect/cmdfence/447/447we02.htm", verified: true},
+                {name: "RCDM Birmingham (Queen Elizabeth Hospital)", address: "Mindelsohn Way, Edgbaston, Birmingham, B15 2GW", maps: "https://maps.google.com/?q=Queen+Elizabeth+Hospital+Birmingham+Mindelsohn+Way+Edgbaston+Birmingham+B15+2GW", source: "https://en.wikipedia.org/wiki/Ministry_of_Defence_Hospital_Unit", verified: true},
+                {name: "MDHU Northallerton (Friarage Hospital)", address: "Friarage Hospital, Northallerton, DL6 1JG", maps: "https://maps.google.com/?q=Friarage+Hospital+Northallerton+DL6+1JG", source: "https://www.arrse.co.uk/wiki/MDHU", verified: true},
+                {name: "DMRC Stanford Hall", address: "Stanford Hall, Stanford on Soar, Loughborough, LE12 5QW", maps: "https://maps.google.com/?q=DMRC+Stanford+Hall+Stanford+on+Soar+Loughborough+LE12+5QW", source: "https://www.slideserve.com/cece/gp-training-in-the-defence-medical-services", verified: true, note: "Defence Medical Rehabilitation Centre - Rehabilitation Medicine rotation"}
             ],
             155: [ // National Rural Track (Western Isles)
-                {name: "Western Isles Hospital", address: "Macaulay Road, Stornoway, HS1 2AF", maps: "https://maps.google.com/?q=Western+Isles+Hospital+Macaulay+Road+Stornoway+HS1+2AF"}
+                {name: "Western Isles Hospital", address: "Macaulay Road, Stornoway, Isle of Lewis, HS1 2AF", maps: "https://maps.google.com/?q=Western+Isles+Hospital+Macaulay+Road+Stornoway+Isle+of+Lewis+HS1+2AF", source: "http://scotlandgptraining.blogspot.com/p/the-scottish-national-rural-track.html", verified: true, note: "All 18 months hospital rotations on-island (Gen Med, Gen Surg, A&E, O&G, Psych). Fully island-based training with no mainland rotations."}
             ],
             156: [ // National Rural Track (Shetland)
-                {name: "Gilbert Bain Hospital", address: "South Road, Lerwick, ZE1 0TB", maps: "https://maps.google.com/?q=Gilbert+Bain+Hospital+South+Road+Lerwick+ZE1+0TB"}
+                {name: "Gilbert Bain Hospital", address: "South Road, Lerwick, Shetland, ZE1 0TB", maps: "https://maps.google.com/?q=Gilbert+Bain+Hospital+South+Road+Lerwick+Shetland+ZE1+0TB", source: "http://scotlandgptraining.blogspot.com/p/the-scottish-national-rural-track.html", verified: true, note: "All 18 months hospital rotations on-island at this Rural General Hospital. Fully island-based training with no mainland rotations."}
             ],
             157: [ // National Rural Track (Orkney)
-                {name: "Balfour Hospital", address: "New Scapa Road, Kirkwall, KW15 1BH", maps: "https://maps.google.com/?q=Balfour+Hospital+New+Scapa+Road+Kirkwall+KW15+1BH"}
+                {name: "Balfour Hospital", address: "New Scapa Road, Kirkwall, Orkney, KW15 1BH", maps: "https://maps.google.com/?q=Balfour+Hospital+New+Scapa+Road+Kirkwall+Orkney+KW15+1BH", source: "http://scotlandgptraining.blogspot.com/p/the-scottish-national-rural-track.html", verified: true, note: "12 months hospital rotations at Orkney's modern 48-bed RGH (Gen Med, Surg, A&E)."},
+                {name: "Caithness General Hospital", address: "Bankhead Road, Wick, Caithness, KW1 5NS", maps: "https://maps.google.com/?q=Caithness+General+Hospital+Bankhead+Road+Wick+Caithness+KW1+5NS", source: "https://www.scotmt.scot.nhs.uk/general-practice/programme-information/gp-programme-descriptors/north/rural-track/", verified: true, note: "6 month Psychiatry rotation 'across the water' to Caithness due to limited Orkney psych services."}
             ],
             158: [ // National Rural Track (Oban)
-                {name: "Lorn and Islands Hospital", address: "Glengallan Road, Oban, PA34 4HH", maps: "https://maps.google.com/?q=Lorn+and+Islands+Hospital+Glengallan+Road+Oban+PA34+4HH"}
+                {name: "Lorn & Islands Hospital", address: "Glengallan Road, Oban, Argyll, PA34 4HH", maps: "https://maps.google.com/?q=Lorn+and+Islands+Hospital+Glengallan+Road+Oban+Argyll+PA34+4HH", source: "http://scotlandgptraining.blogspot.com/p/the-scottish-national-rural-track.html", verified: true, note: "12 months hospital rotations at this Rural General Hospital (Gen Med, Gen Surg, A&E, Ortho)."},
+                {name: "Mid Argyll Community Hospital", address: "Blarbuie Road, Lochgilphead, Argyll, PA31 8JZ", maps: "https://maps.google.com/?q=Mid+Argyll+Community+Hospital+Blarbuie+Road+Lochgilphead+Argyll+PA31+8JZ", source: "https://www.scotmt.scot.nhs.uk/general-practice/programme-information/gp-programme-descriptors/north/rural-track/", verified: true, note: "6 month Psychiatry rotation for Oban track (mental health training post serving Argyll & Bute area)."}
             ],
             159: [ // National Rural Track (Lochgilphead)
-                {name: "Mid Argyll Hospital", address: "Blarbuie Road, Lochgilphead, PA31 8LD", maps: "https://maps.google.com/?q=Mid+Argyll+Hospital+Blarbuie+Road+Lochgilphead+PA31+8LD"}
+                {name: "Lorn & Islands Hospital", address: "Glengallan Road, Oban, Argyll, PA34 4HH", maps: "https://maps.google.com/?q=Lorn+and+Islands+Hospital+Glengallan+Road+Oban+Argyll+PA34+4HH", source: "https://www.scotmt.scot.nhs.uk/general-practice/programme-information/gp-programme-descriptors/north/rural-track/", verified: true, note: "12 months hospital rotations at nearest RGH (Medicine, Surgery, A&E) as Lochgilphead has no large hospital."},
+                {name: "Mid Argyll Community Hospital", address: "Blarbuie Road, Lochgilphead, Argyll, PA31 8JZ", maps: "https://maps.google.com/?q=Mid+Argyll+Community+Hospital+Blarbuie+Road+Lochgilphead+Argyll+PA31+8JZ", source: "https://www.scotmt.scot.nhs.uk/general-practice/programme-information/gp-programme-descriptors/north/rural-track/", verified: true, note: "6 month Psychiatry rotation in local community hospital. GP practice is based in Lochgilphead."}
             ],
             160: [ // National Rural Track (Fort William)
-                {name: "Belford Hospital", address: "Belford Road, Fort William, PH33 6BS", maps: "https://maps.google.com/?q=Belford+Hospital+Belford+Road+Fort+William+PH33+6BS"}
+                {name: "Belford Hospital", address: "Belford Road, Fort William, Lochaber, PH33 6BS", maps: "https://maps.google.com/?q=Belford+Hospital+Belford+Road+Fort+William+Lochaber+PH33+6BS", source: "http://scotlandgptraining.blogspot.com/p/the-scottish-national-rural-track.html", verified: true, note: "12 months at this 34-bed RGH (A&E, surgery, medicine, trauma from Highlands). Highly rated hands-on experience."},
+                {name: "Mid Argyll Community Hospital", address: "Blarbuie Road, Lochgilphead, Argyll, PA31 8JZ", maps: "https://maps.google.com/?q=Mid+Argyll+Community+Hospital+Blarbuie+Road+Lochgilphead+Argyll+PA31+8JZ", source: "https://www.scotmt.scot.nhs.uk/general-practice/programme-information/gp-programme-descriptors/north/rural-track/", verified: true, note: "6 month Psychiatry rotation shared with West Coast trainees (travel from Lochaber to Argyll)."}
             ],
             161: [ // National Rural Track (Caithness)
-                {name: "Caithness General Hospital", address: "Bankhead Road, Wick, KW1 5NS", maps: "https://maps.google.com/?q=Caithness+General+Hospital+Bankhead+Road+Wick+KW1+5NS"}
+                {name: "Caithness General Hospital", address: "Bankhead Road, Wick, Caithness, KW1 5NS", maps: "https://maps.google.com/?q=Caithness+General+Hospital+Bankhead+Road+Wick+Caithness+KW1+5NS", source: "http://scotlandgptraining.blogspot.com/p/the-scottish-national-rural-track.html", verified: true, note: "18 months at this 44-bed RGH (medicine, surgery, obstetrics). Serves far north Scotland."},
+                {name: "Raigmore Hospital", address: "Old Perth Road, Inverness, IV2 3UJ", maps: "https://maps.google.com/?q=Raigmore+Hospital+Old+Perth+Road+Inverness+IV2+3UJ", source: "http://scotlandgptrainingprograms.blogspot.com/p/rural-track-program.html", verified: true, note: "6 month Emergency Medicine rotation at busier tertiary A&E for Caithness trainees."}
             ]
         };
 
