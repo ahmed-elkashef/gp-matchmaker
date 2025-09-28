@@ -727,11 +727,31 @@
             border-radius: 6px;
             font-size: 0.8em;
             border-left: 2px solid #cbd5e0;
+            transition: all 0.2s ease;
+        }
+
+        .hospital-item:hover {
+            background: #edf2f7;
+            transform: translateX(2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .hospital-item.verified {
             border-left-color: #48bb78;
             background: #f0fff4;
+        }
+
+        .hospital-item.verified:hover {
+            background: #e6ffed;
+        }
+
+        .hospital-item a {
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .hospital-item a:hover {
+            opacity: 0.8;
         }
 
         .location-metrics {
@@ -1438,7 +1458,7 @@
             {rank: 28, region: "West Midlands", area: "", scheme: "Black Country", start: "Aug", places: 15},
             {rank: 29, region: "Wales", area: "South", scheme: "Cardiff Area", start: "Aug", places: 0},
             {rank: 30, region: "Wales", area: "West", scheme: "Swansea Area", start: "Aug", places: 1},
-            {rank: 31, region: "Northern", area: "", scheme: "Northern", start: "Aug", places: 0},
+            {rank: 31, region: "Northern", area: "", scheme: "Northern (Scheme 104)", start: "Aug", places: 0},
             {rank: 32, region: "Yorkshire and the Humber", area: "West", scheme: "Airedale GP Scheme", start: "Aug", places: 2},
             {rank: 33, region: "Yorkshire and the Humber", area: "South", scheme: "Barnsley GP Scheme", start: "Aug", places: 6},
             {rank: 34, region: "Yorkshire and the Humber", area: "South", scheme: "Doncaster & Bassetlaw GP Scheme", start: "Aug", places: 22},
@@ -1635,26 +1655,30 @@
                 {name: "Royal Albert Edward Infirmary", address: "Wigan Lane, Wigan, WN1 2NN", maps: "https://maps.google.com/?q=Royal+Albert+Edward+Infirmary+Wigan+Lane+Wigan+WN1+2NN", source: "https://www.nwpgmd.nhs.uk/content/programme-wigan", verified: true},
                 {name: "Wrightington Hospital", address: "Hall Lane, Appley Bridge, Wigan, WN6 9EP", maps: "https://maps.google.com/?q=Wrightington+Hospital+Hall+Lane+Appley+Bridge+WN6+9EP", source: "https://www.nwpgmd.nhs.uk/content/programme-wigan", verified: true}
             ],
-            34: [ // Doncaster & Bassetlaw
-                {name: "Doncaster Royal Infirmary", address: "Armthorpe Road, Doncaster, DN2 5LT", maps: "https://maps.google.com/?q=Doncaster+Royal+Infirmary+Armthorpe+Road+DN2+5LT"},
-                {name: "Bassetlaw Hospital", address: "Kilton Hill, Worksop, S81 0BD", maps: "https://maps.google.com/?q=Bassetlaw+Hospital+Kilton+Hill+Worksop+S81+0BD"}
+            34: [ // Doncaster & Bassetlaw - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Doncaster Royal Infirmary", address: "Armthorpe Road, Doncaster, DN2 5LT", maps: "https://maps.google.com/?q=Doncaster+Royal+Infirmary+Armthorpe+Road+DN2+5LT", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-south-yorkshire-sy/doncaster-and-bassetlaw", verified: true},
+                {name: "Bassetlaw Hospital", address: "Blyth Road, Worksop, S81 0BD", maps: "https://maps.google.com/?q=Bassetlaw+Hospital+Blyth+Road+Worksop+S81+0BD", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-south-yorkshire-sy/doncaster-and-bassetlaw", verified: true}
             ],
-            35: [ // Harrogate
-                {name: "Harrogate District Hospital", address: "Lancaster Park Road, Harrogate, HG2 7SX", maps: "https://maps.google.com/?q=Harrogate+District+Hospital+Lancaster+Park+Road+HG2+7SX"}
+            35: [ // Harrogate - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Harrogate District Hospital", address: "Lancaster Park Road, Harrogate, HG2 7SX", maps: "https://maps.google.com/?q=Harrogate+District+Hospital+Lancaster+Park+Road+HG2+7SX", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-west-yorkshire-wy/harrogate-and-district", verified: true}
             ],
-            36: [ // Heart of Yorkshire
-                {name: "Pinderfields Hospital", address: "Aberford Road, Wakefield, WF1 4DG", maps: "https://maps.google.com/?q=Pinderfields+Hospital+Aberford+Road+Wakefield+WF1+4DG"},
-                {name: "Dewsbury District Hospital", address: "Halifax Road, Dewsbury, WF13 4HS", maps: "https://maps.google.com/?q=Dewsbury+District+Hospital+Halifax+Road+WF13+4HS"}
+            36: [ // Heart of Yorkshire - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Pinderfields Hospital", address: "Aberford Road, Wakefield, WF1 4DG", maps: "https://maps.google.com/?q=Pinderfields+Hospital+Aberford+Road+Wakefield+WF1+4DG", source: "https://gp-training.hee.nhs.uk/heart-of-yorkshire/", verified: true},
+                {name: "Dewsbury District Hospital", address: "Halifax Road, Dewsbury, WF13 4HS", maps: "https://maps.google.com/?q=Dewsbury+District+Hospital+Halifax+Road+WF13+4HS", note: "Part of Mid Yorkshire Hospitals NHS Trust serving Heart of Yorkshire GP scheme"}
             ],
-            37: [ // Northallerton
-                {name: "Friarage Hospital", address: "Bullamoor Road, Northallerton, DL6 1JG", maps: "https://maps.google.com/?q=Friarage+Hospital+Bullamoor+Road+Northallerton+DL6+1JG"}
+            37: [ // Northallerton - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Friarage Hospital", address: "Bullamoor Road, Northallerton, DL6 1JG", maps: "https://maps.google.com/?q=Friarage+Hospital+Bullamoor+Road+Northallerton+DL6+1JG", source: "http://northallertonvts.org.uk/", verified: true}
             ],
-            38: [ // Northern Lincolnshire
-                {name: "Diana Princess of Wales Hospital", address: "Scartho Road, Grimsby, DN33 2BA", maps: "https://maps.google.com/?q=Diana+Princess+of+Wales+Hospital+Scartho+Road+Grimsby+DN33+2BA"},
-                {name: "Scunthorpe General Hospital", address: "Cliff Gardens, Scunthorpe, DN15 7BH", maps: "https://maps.google.com/?q=Scunthorpe+General+Hospital+Cliff+Gardens+DN15+7BH"}
+            38: [ // Northern Lincolnshire - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Diana Princess of Wales Hospital", address: "Scartho Road, Grimsby, DN33 2BA", maps: "https://maps.google.com/?q=Diana+Princess+of+Wales+Hospital+Scartho+Road+Grimsby+DN33+2BA", source: "https://www.yorksandhumberdeanery.nhs.uk/obstetrics_and_gynaecology/hospitals/ne_yorks__n_lincs", verified: true},
+                {name: "Scunthorpe General Hospital", address: "Cliff Gardens, Scunthorpe, DN15 7BH", maps: "https://maps.google.com/?q=Scunthorpe+General+Hospital+Cliff+Gardens+DN15+7BH", source: "https://www.yorksandhumberdeanery.nhs.uk/obstetrics_and_gynaecology/hospitals/ne_yorks__n_lincs", verified: true}
             ],
-            40: [ // Rotherham
-                {name: "Rotherham Hospital", address: "Moorgate Road, Rotherham, S60 2UD", maps: "https://maps.google.com/?q=Rotherham+Hospital+Moorgate+Road+S60+2UD"}
+            39: [ // Pennine GP Scheme - VERIFIED WITH OFFICIAL SOURCES
+                {name: "Calderdale Royal Hospital", address: "Salterhebble, Halifax, HX3 0PW", maps: "https://maps.google.com/?q=Calderdale+Royal+Hospital+Salterhebble+Halifax+HX3+0PW", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-west-yorkshire-wy/calderdale-and", verified: true},
+                {name: "Huddersfield Royal Infirmary", address: "Acre Street, Lindley, Huddersfield, HD3 3EA", maps: "https://maps.google.com/?q=Huddersfield+Royal+Infirmary+Acre+Street+Lindley+Huddersfield+HD3+3EA", source: "https://www.yorksandhumberdeanery.nhs.uk/foundation/about-your-programme-foundation-school-regions-west-yorkshire-wy/calderdale-and", verified: true}
+            ],
+            40: [ // Rotherham - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Rotherham Hospital", address: "Moorgate Road, Rotherham, S60 2UD", maps: "https://maps.google.com/?q=Rotherham+Hospital+Moorgate+Road+S60+2UD", source: "https://www.yorksandhumberdeanery.nhs.uk/general_practice/rotherham-gp-training-scheme", verified: true}
             ],
             41: [ // Thames Valley Oxford - Buckinghamshire
                 {name: "Stoke Mandeville Hospital", address: "Mandeville Road, Aylesbury, HP21 8AL", maps: "https://maps.google.com/?q=Stoke+Mandeville+Hospital+Mandeville+Road+Aylesbury+HP21+8AL"},
@@ -1739,15 +1763,15 @@
                 {name: "Morriston Hospital", address: "Heol Maes Eglwys, Morriston, Swansea, SA6 6NL", maps: "https://maps.google.com/?q=Morriston+Hospital+Heol+Maes+Eglwys+Swansea+SA6+6NL", source: "https://heiw.nhs.wales/education-and-training/recruitment/recruitment/gp-training-schemes/swansea-bay/", verified: true},
                 {name: "Singleton Hospital", address: "Sketty Lane, Sketty, Swansea, SA2 8QA", maps: "https://maps.google.com/?q=Singleton+Hospital+Sketty+Lane+Swansea+SA2+8QA", source: "https://heiw.nhs.wales/education-and-training/recruitment/recruitment/gp-training-schemes/swansea-bay/", verified: true}
             ],
-            31: [ // Northern Scheme 104 (0 places so less critical)
-                {name: "Durham University Hospital", address: "North Road, Durham, DH1 5TW", maps: "https://maps.google.com/?q=Durham+University+Hospital+North+Road+Durham+DH1+5TW"},
-                {name: "Darlington Memorial Hospital", address: "Hollyhurst Road, Darlington, DL3 6HX", maps: "https://maps.google.com/?q=Darlington+Memorial+Hospital+Hollyhurst+Road+Darlington+DL3+6HX"}
+            31: [ // Northern Scheme 104 - UNVERIFIED (no official sources found)
+                {name: "University Hospital of North Durham", address: "North Road, Durham, DH1 5TW", maps: "https://maps.google.com/?q=University+Hospital+North+Durham+North+Road+Durham+DH1+5TW", note: "Research found: Scheme 104 listed in Oriel but no specific hospital information found in Northern deanery documentation. Durham hospitals covered by Scheme 101 (Durham & Tees Valley)"},
+                {name: "Darlington Memorial Hospital", address: "Hollyhurst Road, Darlington, DL3 6HX", maps: "https://maps.google.com/?q=Darlington+Memorial+Hospital+Hollyhurst+Road+Darlington+DL3+6HX", note: "Major teaching hospital in the area but specific link to Scheme 104 not confirmed. Hospital verified for Scheme 101 (Durham & Tees Valley)"}
             ],
-            32: [ // Airedale
-                {name: "Airedale General Hospital", address: "Skipton Road, Steeton, Keighley, BD20 6TD", maps: "https://maps.google.com/?q=Airedale+General+Hospital+Skipton+Road+Steeton+Keighley+BD20+6TD"}
+            32: [ // Airedale - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Airedale General Hospital", address: "Skipton Road, Steeton, Keighley, BD20 6TD", maps: "https://maps.google.com/?q=Airedale+General+Hospital+Skipton+Road+Steeton+Keighley+BD20+6TD", source: "https://www.yorksandhumberdeanery.nhs.uk/general-practice/training-programmes/airedale", verified: true}
             ],
-            33: [ // Barnsley
-                {name: "Barnsley Hospital", address: "Gawber Road, Barnsley, S75 2EP", maps: "https://maps.google.com/?q=Barnsley+Hospital+Gawber+Road+Barnsley+S75+2EP"}
+            33: [ // Barnsley - VERIFIED WITH OFFICIAL SOURCE
+                {name: "Barnsley Hospital", address: "Gawber Road, Barnsley, S75 2EP", maps: "https://maps.google.com/?q=Barnsley+Hospital+Gawber+Road+Barnsley+S75+2EP", source: "https://gp-training.hee.nhs.uk/barnsley-sheffield/", verified: true}
             ],
             43: [ // Chester
                 {name: "Countess of Chester Hospital", address: "Liverpool Road, Chester, CH2 1UL", maps: "https://maps.google.com/?q=Countess+of+Chester+Hospital+Liverpool+Road+Chester+CH2+1UL"}
@@ -2650,9 +2674,16 @@
                 if (scheme.hospitals && scheme.hospitals.length > 0) {
                     hospitalsDetailHTML = scheme.hospitals.map(h => `
                         <div class="hospital-item ${h.verified ? 'verified' : ''}">
-                            <div style="font-weight: 600;">${h.verified ? '✅' : '⚠️'} ${h.name}</div>
+                            <div style="font-weight: 600;">
+                                ${h.verified ? '✅' : '⚠️'}
+                                ${h.maps ? `<a href="${h.maps}" target="_blank" style="color: inherit; text-decoration: none; hover: text-decoration: underline;">${h.name} 📍</a>` : h.name}
+                            </div>
                             <div style="color: #718096; margin-top: 2px;">${h.address}</div>
-                            ${h.source ? `<a href="${h.source}" target="_blank" style="color: #667eea; font-size: 0.9em;">Official Source</a>` : ''}
+                            <div style="margin-top: 4px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                ${h.maps ? `<a href="${h.maps}" target="_blank" style="color: #667eea; font-size: 0.9em; text-decoration: none;">📍 View on Maps</a>` : ''}
+                                ${h.source ? `<a href="${h.source}" target="_blank" style="color: #48bb78; font-size: 0.9em; text-decoration: none;">✓ Official Source</a>` : ''}
+                            </div>
+                            ${h.note ? `<div style="color: #e53e3e; font-size: 0.85em; margin-top: 4px; font-style: italic;">ℹ️ ${h.note}</div>` : ''}
                         </div>
                     `).join('');
                 } else {
